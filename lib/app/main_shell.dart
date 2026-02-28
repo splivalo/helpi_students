@@ -33,9 +33,9 @@ class _MainShellState extends State<MainShell> {
   void initState() {
     super.initState();
     _screens = [
-      _PlaceholderScreen(title: AppStrings.navDashboard),
       _PlaceholderScreen(title: AppStrings.navSchedule),
       const ChatScreen(),
+      _PlaceholderScreen(title: AppStrings.navStatistics),
       ProfileScreen(
         localeNotifier: widget.localeNotifier,
         onLogout: widget.onLogout,
@@ -69,11 +69,6 @@ class _MainShellState extends State<MainShell> {
           iconSize: 28,
           items: [
             BottomNavigationBarItem(
-              icon: const Icon(Icons.dashboard_outlined),
-              activeIcon: const Icon(Icons.dashboard),
-              label: AppStrings.navDashboard,
-            ),
-            BottomNavigationBarItem(
               icon: const Icon(Icons.calendar_today_outlined),
               activeIcon: const Icon(Icons.calendar_today),
               label: AppStrings.navSchedule,
@@ -82,6 +77,11 @@ class _MainShellState extends State<MainShell> {
               icon: const Icon(Icons.chat_bubble_outline),
               activeIcon: const Icon(Icons.chat_bubble),
               label: AppStrings.navMessages,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.bar_chart_outlined),
+              activeIcon: const Icon(Icons.bar_chart),
+              label: AppStrings.navStatistics,
             ),
             BottomNavigationBarItem(
               icon: const Icon(Icons.person_outline),

@@ -32,8 +32,8 @@ class AppStrings {
       'navOrders': 'Narudžbe',
       'navMessages': 'Poruke',
       'navProfile': 'Profil',
-      'navDashboard': 'Dashboard',
       'navSchedule': 'Raspored',
+      'navStatistics': 'Statistika',
 
       // ── Naruči ekran ─────────────────────────
       'orderTitle': 'Naruči pomoć',
@@ -336,8 +336,8 @@ class AppStrings {
       'navOrders': 'Orders',
       'navMessages': 'Messages',
       'navProfile': 'Profile',
-      'navDashboard': 'Dashboard',
       'navSchedule': 'Schedule',
+      'navStatistics': 'Statistics',
 
       // ── Order screen ─────────────────────────
       'orderTitle': 'Order help',
@@ -656,8 +656,8 @@ class AppStrings {
   static String get navOrders => _t('navOrders');
   static String get navMessages => _t('navMessages');
   static String get navProfile => _t('navProfile');
-  static String get navDashboard => _t('navDashboard');
   static String get navSchedule => _t('navSchedule');
+  static String get navStatistics => _t('navStatistics');
 
   // ── Naruči ekran ──────────────────────────────
   static String get orderTitle => _t('orderTitle');
