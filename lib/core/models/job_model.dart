@@ -30,8 +30,9 @@ class Job {
   final JobStatus status;
   final String? notes;
 
-  /// Može li student otkazati ovaj posao (>24h do početka)?
+  /// Može li student otkazati ovaj posao (>24h do početka i status assigned)?
   bool get canDecline {
+    if (status != JobStatus.assigned) return false;
     final jobStart = DateTime(
       date.year,
       date.month,
@@ -64,7 +65,8 @@ class MockJobs {
         seniorName: 'Marija Horvat',
         address: 'Ilica 42, Zagreb',
         status: JobStatus.completed,
-        notes: 'Kupiti lijekove u ljekarni i namirnice po popisu.',
+        notes:
+            'Kupiti lijekove u ljekarni Zdravlje na uglu, zatim namirnice po popisu koji je na hladnjaku - mlijeko, kruh, jaja, maslac, sir, jogurt i voće.',
       ),
       Job(
         id: '2',

@@ -224,7 +224,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
 
     if (!mounted) return;
-    controller.dispose();
 
     if (confirmed == true) {
       // Mock: makni posao iz liste
