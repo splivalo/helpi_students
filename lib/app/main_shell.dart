@@ -6,6 +6,7 @@ import 'package:helpi_student/core/l10n/locale_notifier.dart';
 import 'package:helpi_student/core/models/availability_model.dart';
 import 'package:helpi_student/features/chat/presentation/chat_list_screen.dart';
 import 'package:helpi_student/features/profile/presentation/profile_screen.dart';
+import 'package:helpi_student/features/schedule/presentation/schedule_screen.dart';
 
 /// Glavni shell s BottomNavigationBar — 4 studentska taba.
 class MainShell extends StatefulWidget {
@@ -33,7 +34,7 @@ class _MainShellState extends State<MainShell> {
   void initState() {
     super.initState();
     _screens = [
-      _PlaceholderScreen(title: AppStrings.navSchedule),
+      const ScheduleScreen(),
       const ChatScreen(),
       _PlaceholderScreen(title: AppStrings.navStatistics),
       ProfileScreen(

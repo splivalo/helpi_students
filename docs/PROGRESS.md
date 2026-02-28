@@ -10,7 +10,7 @@
 | Onboarding (availability setup)                  | ✅ Done                                     | 100% |
 | Profile (data, availability, settings)           | ✅ Done                                     | 100% |
 | Time Slot Picker (custom CupertinoPicker)        | ✅ Done                                     | 100% |
-| Raspored (Schedule)                              | ⬜ Placeholder                              | 0%   |
+| Raspored (Schedule)                              | ✅ Done                                     | 100% |
 | Poruke (Chat / Messages)                         | ⬜ Placeholder                              | 0%   |
 | Statistika (Statistics)                          | ⬜ Placeholder                              | 0%   |
 | Documentation                                    | ✅ Done                                     | 100% |
@@ -34,10 +34,10 @@
 - [x] Tab restructure — removed Dashboard, added Statistika
 - [x] Documentation — docs/ folder with ARCHITECTURE, APP_FLOW, BUSINESS_LOGIC
 - [x] dart analyze: 0 errors maintained throughout
+- [x] Schedule screen — weekly strip + daily job list, job cards, decline dialog
+- [x] Job model — mock data with 6 jobs, ServiceType enum, JobStatus enum, canDecline rule
 
 ## Next Steps (awaiting user confirmation)
 
-1. **Raspored screen** — calendar view of assigned jobs (mock data)
-2. **Job detail view** — details of an assigned job + "Ne mogu" (decline) button with reason
-3. **Statistika screen** — earnings, completed jobs count, ratings
-4. **Chat screen** — conversation list + chat messages
+1. **Statistika screen** — earnings, completed jobs count, ratings
+2. **Chat screen** — conversation list + chat messages

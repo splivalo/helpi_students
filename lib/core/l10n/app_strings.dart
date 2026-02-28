@@ -264,6 +264,34 @@ class AppStrings {
       'termsOfUse': 'uvjetima',
       'cardEndingIn': 'Kartica završava na {digits}',
 
+      // ── Raspored (schedule) ────────────────────
+      'scheduleTitle': 'Raspored',
+      'scheduleToday': 'Danas',
+      'scheduleTomorrow': 'Sutra',
+      'scheduleNoJobs': 'Nemate zakazanih poslova za ovaj dan.',
+      'scheduleNoJobsSubtitle': 'Uživajte u slobodnom danu!',
+      'jobDetailTitle': 'Detalji posla',
+      'jobSenior': 'Korisnik',
+      'jobAddress': 'Adresa',
+      'jobTime': 'Vrijeme',
+      'jobService': 'Usluga',
+      'jobNotes': 'Napomene',
+      'jobStatusAssigned': 'Dodijeljeno',
+      'jobStatusCompleted': 'Završeno',
+      'jobStatusCancelled': 'Otkazano',
+      'jobDecline': 'Ne mogu',
+      'jobDeclineTitle': 'Otkažite posao',
+      'jobDeclineHint': 'Napišite razlog otkazivanja...',
+      'jobDeclineConfirm': 'Pošalji',
+      'jobDeclineTooLate': 'Nije moguće otkazati manje od 24h prije početka.',
+      'jobDeclineSuccess': 'Posao je otkazan.',
+      'serviceShopping2': 'Kupovina',
+      'serviceHouseHelp2': 'Pomoć u kući',
+      'serviceSocializing2': 'Društvo',
+      'serviceWalking2': 'Šetnja',
+      'serviceEscort2': 'Pratnja',
+      'serviceOther2': 'Ostalo',
+
       // ── Dostupnost (student) ──────────────────
       'availabilitySection': 'Dostupnost',
       'availabilityDescription':
@@ -567,6 +595,34 @@ class AppStrings {
       'agreeToTerms': 'I agree to the ',
       'termsOfUse': 'terms',
       'cardEndingIn': 'Card ending in {digits}',
+
+      // ── Schedule ──────────────────────────────
+      'scheduleTitle': 'Schedule',
+      'scheduleToday': 'Today',
+      'scheduleTomorrow': 'Tomorrow',
+      'scheduleNoJobs': 'No jobs scheduled for this day.',
+      'scheduleNoJobsSubtitle': 'Enjoy your free time!',
+      'jobDetailTitle': 'Job details',
+      'jobSenior': 'Client',
+      'jobAddress': 'Address',
+      'jobTime': 'Time',
+      'jobService': 'Service',
+      'jobNotes': 'Notes',
+      'jobStatusAssigned': 'Assigned',
+      'jobStatusCompleted': 'Completed',
+      'jobStatusCancelled': 'Cancelled',
+      'jobDecline': 'Can\'t do it',
+      'jobDeclineTitle': 'Cancel job',
+      'jobDeclineHint': 'Write the reason for cancellation...',
+      'jobDeclineConfirm': 'Submit',
+      'jobDeclineTooLate': 'Cannot cancel less than 24h before the start.',
+      'jobDeclineSuccess': 'Job cancelled.',
+      'serviceShopping2': 'Shopping',
+      'serviceHouseHelp2': 'House help',
+      'serviceSocializing2': 'Socializing',
+      'serviceWalking2': 'Walking',
+      'serviceEscort2': 'Escort',
+      'serviceOther2': 'Other',
 
       // ── Availability (student) ────────────────
       'availabilitySection': 'Availability',
@@ -889,6 +945,34 @@ class AppStrings {
   static String get termsOfUse => _t('termsOfUse');
   static String cardEndingIn(String digits) =>
       _t('cardEndingIn', params: {'digits': digits});
+
+  // ── Raspored (schedule) ───────────────────────
+  static String get scheduleTitle => _t('scheduleTitle');
+  static String get scheduleToday => _t('scheduleToday');
+  static String get scheduleTomorrow => _t('scheduleTomorrow');
+  static String get scheduleNoJobs => _t('scheduleNoJobs');
+  static String get scheduleNoJobsSubtitle => _t('scheduleNoJobsSubtitle');
+  static String get jobDetailTitle => _t('jobDetailTitle');
+  static String get jobSenior => _t('jobSenior');
+  static String get jobAddress => _t('jobAddress');
+  static String get jobTime => _t('jobTime');
+  static String get jobService => _t('jobService');
+  static String get jobNotes => _t('jobNotes');
+  static String get jobStatusAssigned => _t('jobStatusAssigned');
+  static String get jobStatusCompleted => _t('jobStatusCompleted');
+  static String get jobStatusCancelled => _t('jobStatusCancelled');
+  static String get jobDecline => _t('jobDecline');
+  static String get jobDeclineTitle => _t('jobDeclineTitle');
+  static String get jobDeclineHint => _t('jobDeclineHint');
+  static String get jobDeclineConfirm => _t('jobDeclineConfirm');
+  static String get jobDeclineTooLate => _t('jobDeclineTooLate');
+  static String get jobDeclineSuccess => _t('jobDeclineSuccess');
+  static String get serviceShopping2 => _t('serviceShopping2');
+  static String get serviceHouseHelp2 => _t('serviceHouseHelp2');
+  static String get serviceSocializing2 => _t('serviceSocializing2');
+  static String get serviceWalking2 => _t('serviceWalking2');
+  static String get serviceEscort2 => _t('serviceEscort2');
+  static String get serviceOther2 => _t('serviceOther2');
 
   // ── Dostupnost (student) ──────────────────────
   static String get availabilitySection => _t('availabilitySection');
