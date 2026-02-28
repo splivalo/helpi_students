@@ -85,11 +85,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final picked = await showTimeSlotPicker(
       context: context,
       initialTime: initial,
+      minTime: isFrom
+          ? null
+          : TimeOfDay(
+              hour: (day.from.hour * 60 + day.from.minute + 45) ~/ 60,
+              minute: (day.from.hour * 60 + day.from.minute + 45) % 60,
+            ),
     );
     if (picked != null && context.mounted) {
       setState(() {
         if (isFrom) {
           day.from = picked;
+          // Ako je novo "Od" + 1h > "Do", snap "Do" na Od + 1h.
+          final fromMin = picked.hour * 60 + picked.minute;
+          final toMin = day.to.hour * 60 + day.to.minute;
+          if (toMin < fromMin + 60) {
+            final next = fromMin + 60;
+            day.to = TimeOfDay(hour: next ~/ 60, minute: next % 60);
+          }
         } else {
           day.to = picked;
         }
