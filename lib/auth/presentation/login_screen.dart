@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 100,
                       height: 100,
                       decoration: const BoxDecoration(
-                        color: _coral,
+                        color: _teal,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
