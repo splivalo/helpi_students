@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/l10n/locale_notifier.dart';
 import 'package:helpi_student/core/models/availability_model.dart';
+import 'package:helpi_student/core/widgets/time_slot_picker.dart';
 
 /// Profil ekran — pristupni podaci, dostupnost, jezik, uvjeti, odjava.
 class ProfileScreen extends StatefulWidget {
@@ -81,7 +82,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required bool isFrom,
   }) async {
     final initial = isFrom ? day.from : day.to;
-    final picked = await showTimePicker(context: context, initialTime: initial);
+    final picked = await showTimeSlotPicker(
+      context: context,
+      initialTime: initial,
+    );
     if (picked != null && context.mounted) {
       setState(() {
         if (isFrom) {

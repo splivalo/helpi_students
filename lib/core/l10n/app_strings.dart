@@ -91,6 +91,7 @@ class AppStrings {
       'retry': 'Pokušaj ponovo',
       'cancel': 'Odustani',
       'confirm': 'Potvrdi',
+      'selectTime': 'Odaberite vrijeme',
       'save': 'Spremi',
       'back': 'Natrag',
       'next': 'Dalje',
@@ -394,6 +395,7 @@ class AppStrings {
       'retry': 'Try again',
       'cancel': 'Cancel',
       'confirm': 'Confirm',
+      'selectTime': 'Select time',
       'save': 'Save',
       'back': 'Back',
       'next': 'Next',
@@ -715,6 +717,7 @@ class AppStrings {
   static String get retry => _t('retry');
   static String get cancel => _t('cancel');
   static String get confirm => _t('confirm');
+  static String get selectTime => _t('selectTime');
   static String get save => _t('save');
   static String get back => _t('back');
   static String get next => _t('next');

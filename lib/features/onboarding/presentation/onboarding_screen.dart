@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/models/availability_model.dart';
+import 'package:helpi_student/core/widgets/time_slot_picker.dart';
 
 /// Onboarding — student mora postaviti dostupnost prije korištenja app-a.
 /// Gumb "Završi" je disabled dok nema barem 1 dan s postavljenim vremenom.
@@ -57,7 +58,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     required bool isFrom,
   }) async {
     final initial = isFrom ? day.from : day.to;
-    final picked = await showTimePicker(context: context, initialTime: initial);
+    final picked = await showTimeSlotPicker(
+      context: context,
+      initialTime: initial,
+    );
     if (picked != null && mounted) {
       setState(() {
         if (isFrom) {
