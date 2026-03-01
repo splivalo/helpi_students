@@ -309,6 +309,8 @@ class AppStrings {
       'statsCompareSame': 'Jednako sati kao prošli {period}.',
       'statsPeriodWeek': 'tjedan',
       'statsPeriodMonth': 'mjesec',
+      'statsShowAllReviews': 'Prikaži sve ocjene',
+      'statsAllReviews': 'Sve ocjene',
 
       // ── Dostupnost (student) ──────────────────
       'availabilitySection': 'Dostupnost',
@@ -661,6 +663,8 @@ class AppStrings {
       'statsCompareSame': 'Same hours as the previous {period}.',
       'statsPeriodWeek': 'week',
       'statsPeriodMonth': 'month',
+      'statsShowAllReviews': 'Show all reviews',
+      'statsAllReviews': 'All reviews',
 
       // ── Availability (student) ────────────────
       'availabilitySection': 'Availability',
@@ -1033,6 +1037,8 @@ class AppStrings {
       _t('statsCompareSame', params: {'period': period});
   static String get statsPeriodWeek => _t('statsPeriodWeek');
   static String get statsPeriodMonth => _t('statsPeriodMonth');
+  static String get statsShowAllReviews => _t('statsShowAllReviews');
+  static String get statsAllReviews => _t('statsAllReviews');
 
   // ── Dostupnost (student) ──────────────────────
   static String get availabilitySection => _t('availabilitySection');

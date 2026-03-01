@@ -106,12 +106,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return sum / reviewed.length;
   }
 
-  List<_ReviewEntry> _recentReviews() {
+  List<_ReviewEntry> _allReviews() {
     final reviewed =
         _completedJobs.where((j) => j.review != null).toList()
           ..sort((a, b) => b.date.compareTo(a.date));
     return reviewed
-        .take(5)
         .map(
           (j) => _ReviewEntry(seniorName: j.seniorName, review: j.review!),
         )
@@ -552,8 +551,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   // Reviews section
 
+  static const _previewCount = 3;
+
   Widget _buildReviewsSection(ThemeData theme) {
-    final reviews = _recentReviews();
+    final allReviews = _allReviews();
+    final preview = allReviews.take(_previewCount).toList();
+    final hasMore = allReviews.length > _previewCount;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -565,7 +568,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           ),
         ),
         const SizedBox(height: 12),
-        if (reviews.isEmpty)
+        if (allReviews.isEmpty)
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
@@ -580,9 +583,75 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               ),
             ),
           )
-        else
-          ...reviews.map((r) => _buildReviewCard(theme, r)),
+        else ...[          ...preview.map((r) => _buildReviewCard(theme, r)),
+          if (hasMore)
+            Center(
+              child: TextButton(
+                onPressed: () => _showAllReviews(context, allReviews),
+                child: Text(
+                  AppStrings.statsShowAllReviews,
+                  style: const TextStyle(
+                    color: _teal,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ],
+    );
+  }
+
+  void _showAllReviews(BuildContext context, List<_ReviewEntry> reviews) {
+    final theme = Theme.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: _offWhite,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.85,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (ctx, scrollController) {
+            return Column(
+              children: [
+                const SizedBox(height: 8),
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    AppStrings.statsAllReviews,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: reviews.length,
+                    itemBuilder: (ctx, i) =>
+                        _buildReviewCard(theme, reviews[i]),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
