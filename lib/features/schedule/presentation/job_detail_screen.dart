@@ -70,11 +70,22 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
   Color _statusColor(JobStatus status) {
     switch (status) {
       case JobStatus.assigned:
-        return const Color(0xFF009D9D);
+        return const Color(0xFF4CAF50);
       case JobStatus.completed:
         return const Color(0xFF757575);
       case JobStatus.cancelled:
-        return const Color(0xFFC62828);
+        return const Color(0xFFEF5B5B);
+    }
+  }
+
+  Color _statusBgColor(JobStatus status) {
+    switch (status) {
+      case JobStatus.assigned:
+        return const Color(0xFFE8F5E9);
+      case JobStatus.completed:
+        return const Color(0xFFF0F0F0);
+      case JobStatus.cancelled:
+        return const Color(0xFFFFEBEE);
     }
   }
 
@@ -242,7 +253,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: sColor.withAlpha(30),
+                            color: _statusBgColor(_job.status),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -450,7 +461,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                               minimumSize: Size.zero,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                           ),

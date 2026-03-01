@@ -480,7 +480,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         icon = Icons.trending_up;
       } else {
         text = AppStrings.statsCompareLess(pct.toString(), period);
-        color = const Color(0xFFC62828);
+        color = const Color(0xFFEF5B5B);
         icon = Icons.trending_down;
       }
     }
