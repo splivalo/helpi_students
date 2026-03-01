@@ -75,13 +75,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   List<_WeekRange> _monthlyWeeks(DateTime monthStart) {
     final weeks = <_WeekRange>[];
-    var weekStart = monthStart.subtract(
-      Duration(days: monthStart.weekday - 1),
-    );
-    final nextMonth =
-        (monthStart.month == 12)
-            ? DateTime(monthStart.year + 1, 1)
-            : DateTime(monthStart.year, monthStart.month + 1);
+    var weekStart = monthStart.subtract(Duration(days: monthStart.weekday - 1));
+    final nextMonth = (monthStart.month == 12)
+        ? DateTime(monthStart.year + 1, 1)
+        : DateTime(monthStart.year, monthStart.month + 1);
 
     while (weekStart.isBefore(nextMonth)) {
       final weekEnd = weekStart.add(const Duration(days: 7));
@@ -107,13 +104,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   List<_ReviewEntry> _allReviews() {
-    final reviewed =
-        _completedJobs.where((j) => j.review != null).toList()
-          ..sort((a, b) => b.date.compareTo(a.date));
+    final reviewed = _completedJobs.where((j) => j.review != null).toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
     return reviewed
-        .map(
-          (j) => _ReviewEntry(seniorName: j.seniorName, review: j.review!),
-        )
+        .map((j) => _ReviewEntry(seniorName: j.seniorName, review: j.review!))
         .toList();
   }
 
@@ -276,10 +270,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         if (h > 0)
                           Text(
                             '${h.toStringAsFixed(0)}h',
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: _grey,
-                            ),
+                            style: const TextStyle(fontSize: 10, color: _grey),
                           ),
                         const SizedBox(height: 4),
                         Container(
@@ -307,7 +298,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          _buildComparison(theme, totalHours, prevTotal, AppStrings.statsPeriodWeek),
+          _buildComparison(
+            theme,
+            totalHours,
+            prevTotal,
+            AppStrings.statsPeriodWeek,
+          ),
           const SizedBox(height: 8),
           Container(
             width: double.infinity,
@@ -416,10 +412,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         Text(
                           '${_fmtDate(w.from)}\n${_fmtDate(w.to)}',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 9,
-                            color: _grey,
-                          ),
+                          style: const TextStyle(fontSize: 9, color: _grey),
                         ),
                       ],
                     ),
@@ -429,7 +422,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          _buildComparison(theme, totalHours, prevTotal, AppStrings.statsPeriodMonth),
+          _buildComparison(
+            theme,
+            totalHours,
+            prevTotal,
+            AppStrings.statsPeriodMonth,
+          ),
           const SizedBox(height: 8),
           Container(
             width: double.infinity,
@@ -583,7 +581,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               ),
             ),
           )
-        else ...[          ...preview.map((r) => _buildReviewCard(theme, r)),
+        else ...[
+          ...preview.map((r) => _buildReviewCard(theme, r)),
           if (hasMore)
             Center(
               child: TextButton(
@@ -722,11 +721,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 // Helper classes
 
 class _WeekRange {
-  const _WeekRange({
-    required this.from,
-    required this.to,
-    required this.hours,
-  });
+  const _WeekRange({required this.from, required this.to, required this.hours});
 
   final DateTime from;
   final DateTime to;
