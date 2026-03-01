@@ -1,7 +1,7 @@
 # Business Logic
 
 > Business rules and domain logic for the Helpi Student app.  
-> Last updated: February 2025.
+> Last updated: March 2026.
 
 ---
 
@@ -112,9 +112,9 @@ Students may be assigned any service type. Future: student can indicate which se
 
 | Tab                         | Purpose                                                   | Business value                    |
 | --------------------------- | --------------------------------------------------------- | --------------------------------- |
-| **Raspored** (Schedule)     | View assigned jobs on a calendar                          | Know when and where to show up    |
+| **Raspored** (Schedule)     | View assigned jobs with weekly strip + daily list         | Know when and where to show up    |
 | **Poruke** (Messages)       | Chat with Helpi support (and later directly with seniors) | Coordinate details, report issues |
-| **Statistika** (Statistics) | View earnings, completed jobs, ratings                    | Track performance and income      |
+| **Statistika** (Statistics) | Weekly/monthly hours charts, average rating, reviews      | Track performance and progress    |
 | **Profil** (Profile)        | Manage personal data, availability, settings              | Keep info current for assignments |
 
 ---
@@ -167,10 +167,11 @@ Students may be assigned any service type. Future: student can indicate which se
 
 ## 9. Current Limitations (Prototype Phase)
 
-- **No backend** — all data is in-memory, resets on app restart
+- **No backend** — all data is in-memory (21 mock jobs), resets on app restart
 - **No real auth** — login is mock (any tap logs in)
 - **No push notifications** — students won't be notified of new assignments
-- **No actual job data** — Raspored tab is a placeholder
-- **No payment integration** — Statistika is a placeholder
+- **No payment integration** — earnings tracking not yet implemented
+- **Chat is placeholder** — no real messaging functionality
+- **Social login removed** — only email/password mock login
 
 These will be addressed as the app moves from prototype to production.

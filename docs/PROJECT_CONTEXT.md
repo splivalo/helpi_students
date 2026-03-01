@@ -19,21 +19,24 @@
 ## 2. Arhitektura — 2 Odvojene Aplikacije
 
 ### Helpi Senior (gotova)
+
 - **Što radi:** Senior naručuje pomoć
 - **Ekrani:** Login → Naruči pomoć → Moje narudžbe (3 taba) → Chat s podrškom → Profil
 - **Projekt:** `helpi_senior/`
 - **Repo:** `splivalo/helpi_students_2.0`, branch `main`
 
-### Helpi Student (za napraviti)
+### Helpi Student (in progress)
+
 - **Što radi:** Student prima i obavlja narudžbe
-- **Ekrani (plan):**
-  - Login/Register (ISTI dizajn kao senior)
-  - Dashboard — lista dolazećih narudžbi za prihvaćanje
-  - Moje narudžbe — prihvaćene narudžbe i raspored
-  - Chat — komunikacija sa seniorima / podrškom
-  - Profil — osobni podaci, zarada, dostupnost, ocjene
+- **Ekrani (implementirani):**
+  - Login/Register (social login removed)
+  - Onboarding (availability setup)
+  - Raspored — weekly strip + daily job list + job detail + decline
+  - Statistika — weekly/monthly bar charts + avg rating + reviews
+  - Chat (placeholder)
+  - Profil — osobni podaci, dostupnost, jezik, logout
 - **Isti dizajn sustav:** Boje, border radius, gumbi, kartice, fontovi — SVE isto kao senior app
-- **Dijeli assets:** Logo, SVG ikone, social login SVG-ovi
+- **Dijeli assets:** Logo, SVG ikone
 
 ---
 
@@ -86,6 +89,7 @@ lib/
 ## 4. Ključni Patterini (koristi iste u student app-u)
 
 ### 4.1 i18n — Gemini Hybrid Pattern
+
 - **NIKAD** hardkodirati tekst u widgete
 - Sve ide kroz `AppStrings` klasu
 - `_localizedValues` mapa s HR i EN
@@ -93,6 +97,7 @@ lib/
 - Parametrizirani: `static String orderNumber(String number) => _t('orderNumber', params: {'number': number});`
 
 ### 4.2 Auth Flow (mock)
+
 ```
 LoginScreen (onLoginSuccess callback)
     ↓ klik Login/Register
@@ -100,10 +105,12 @@ _isLoggedIn = true → MainShell prikazan
     ↓ klik Logout u profilu
 _isLoggedIn = false → LoginScreen prikazan
 ```
+
 - Nema prave autentikacije — sve je UI prototip
 - Social buttoni (Google, Apple, Facebook) svi zovu `onLoginSuccess`
 
 ### 4.3 Locale Management
+
 ```
 LocaleNotifier (ValueNotifier<Locale>)
     ↓ setLocale('HR' ili 'EN')
@@ -113,59 +120,66 @@ ValueListenableBuilder na MaterialApp rebuilda UI
 ```
 
 ### 4.4 Navigacija
+
 - `MainShell` — `IndexedStack` + `BottomNavigationBar`
-- 4 taba: Naruči | Narudžbe | Poruke | Profil
-- Student app će imati drugačije tabove, ali ISTI pattern
+- 4 taba: Raspored | Poruke | Statistika | Profil
+- Student app koristi iste tabove od početka razvoja
 
 ### 4.5 State Management
+
 - `ValueNotifier` + `ValueListenableBuilder` (lokale, narudžbe)
 - `setState` za lokalni UI state
 - Nema Riverpod/Bloc/Provider — jednostavno i čisto
 
 ### 4.6 Async Safety
+
 - Obavezan `if (!context.mounted) return;` nakon svakog `await` u UI sloju
 
 ---
 
 ## 5. Student App — Razlike od Senior-a
 
-| Aspekt | Senior | Student |
-|--------|--------|---------|
-| **Uloga** | Naručuje usluge | Prima i obavlja narudžbe |
-| **Tab 1** | "Naruči" (wizard za novu narudžbu) | "Dashboard" (lista novih narudžbi za prihvaćanje) |
-| **Tab 2** | "Narudžbe" (moje narudžbe, 3 taba) | "Raspored" (prihvaćene narudžbe, kalendar) |
-| **Tab 3** | "Poruke" (chat s podrškom) | "Poruke" (chat sa seniorima + podrška) |
-| **Tab 4** | "Profil" (osobni podaci, kartice) | "Profil" (osobni podaci, zarada, dostupnost, ocjene) |
-| **Order flow** | Kreira narudžbu | Prihvaća/odbija narudžbu |
-| **Ocjenjivanje** | Ocjenjuje studente | Prima ocjene od seniora |
-| **Plaćanje** | Plaća za uslugu | Prima uplatu za uslugu |
+| Aspekt           | Senior                             | Student                                        |
+| ---------------- | ---------------------------------- | ---------------------------------------------- |
+| **Uloga**        | Naručuje usluge                    | Prima i obavlja narudžbe                       |
+| **Tab 1**        | "Naruči" (wizard za novu narudžbu) | "Raspored" (weekly strip + daily job list)     |
+| **Tab 2**        | "Narudžbe" (moje narudžbe, 3 taba) | "Poruke" (chat s podrškom, placeholder)        |
+| **Tab 3**        | "Poruke" (chat s podrškom)         | "Statistika" (weekly/monthly charts + ratings) |
+| **Tab 4**        | "Profil" (osobni podaci, kartice)  | "Profil" (osobni podaci, dostupnost, postavke) |
+| **Order flow**   | Kreira narudžbu                    | Vidi dodijeljene, može otkazati (>24h)         |
+| **Ocjenjivanje** | Ocjenjuje studente                 | Prima ocjene od seniora                        |
+| **Plaćanje**     | Plaća za uslugu                    | Prima uplatu za uslugu                         |
 
 ---
 
 ## 6. Usluge koje Helpi nudi
 
-| Ključ | HR | EN |
-|-------|-----|-----|
-| `serviceShopping` | Kupovina | Shopping |
-| `serviceHousehold` | Kućanstvo | Household |
-| `serviceCompanionship` | Pratnja | Companionship |
-| `serviceActivities` | Aktivnosti | Activities |
-| `serviceTechHelp` | Tehnologija | Tech Help |
-| `servicePets` | Ljubimci | Pets |
+| Ključ                 | HR        | EN          |
+| --------------------- | --------- | ----------- |
+| `serviceShopping2`    | Kupovina  | Shopping    |
+| `serviceHouseHelp2`   | Kućanstvo | Household   |
+| `serviceSocializing2` | Druženje  | Socializing |
+| `serviceWalking2`     | Šetnja    | Walking     |
+| `serviceEscort2`      | Pratnja   | Escort      |
+| `serviceOther2`       | Ostalo    | Other       |
 
-Plus u order flow-u: Pomoć u kući, Društvo, Šetnja, Ostalo
+Job model koristi `ServiceType` enum: shopping, houseHelp, socializing, walking, escort, other.
+Svaki job ima `List<ServiceType>` — može imati više kategorija usluga.
 
 ---
 
 ## 7. Mock Data Pattern
 
 Trenutno SVE je mock data — nema backenda.
-- `OrdersNotifier` (ValueNotifier) drži listu narudžbi u memoriji
-- Studenti su hardkodirani s imenima, slikama (`student_1.jpg` itd.), ocjenama
-- Slike studenata u `assets/images/`
-- Order statusi: `processing` → `active` → `completed`
 
-Za student app: isti pristup — mock data, bez backenda, čisti UI prototip.
+- `MockJobs.all` — 21 mock jobova sa seniorima, adresama, servisima, statusima, recenzijama
+- Datumi raspoređeni ~45 dana unazad od danas za smislene chart podatke
+- `ReviewModel` — ocjena (1-5) + komentar + datum string
+- `JobStatus` enum: assigned, completed, cancelled
+- `ServiceType` enum: shopping, houseHelp, socializing, walking, escort, other
+- Slike studenata NISU korištene (student app ne prikazuje slike studenata)
+
+Za student app: mock data, bez backenda, čisti UI prototip.
 
 ---
 
@@ -197,11 +211,13 @@ Ova pravila su u `kodeks rada za fakturist projekt.instructions.md` i MORAJU se 
 ## 10. Kako Početi Student App
 
 ### Korak 1: Novi Flutter projekt
+
 ```bash
 flutter create helpi_student
 ```
 
 ### Korak 2: Kopiraj iz senior app-a
+
 - `theme.dart` → `lib/app/theme.dart` (IDENTIČAN)
 - `app_strings.dart` strukturu → ali s drugim stringovima za studenta
 - `locale_notifier.dart` → `lib/core/l10n/`
@@ -209,6 +225,7 @@ flutter create helpi_student
 - `login_screen.dart` → `lib/features/auth/` (IDENTIČAN ili gotovo identičan)
 
 ### Korak 3: Dodaj dependencies
+
 ```yaml
 flutter_svg: ^2.2.3
 flutter_localizations:
@@ -216,24 +233,33 @@ flutter_localizations:
 ```
 
 ### Korak 4: Struktura foldera
+
 ```
 lib/
 ├── main.dart
 ├── app/
 │   ├── app.dart
-│   ├── main_shell.dart     # Drugačiji tabovi!
+│   ├── main_shell.dart     # 4 taba: Raspored, Poruke, Statistika, Profil
 │   └── theme.dart          # Kopija iz seniora
 ├── core/
-│   └── l10n/
-│       ├── app_strings.dart
-│       └── locale_notifier.dart
+│   ├── l10n/
+│   │   ├── app_strings.dart
+│   │   └── locale_notifier.dart
+│   ├── models/
+│   │   ├── availability_model.dart
+│   │   ├── job_model.dart           # Job + ServiceType + JobStatus + MockJobs
+│   │   └── review_model.dart        # ReviewModel
+│   └── widgets/
+│       └── time_slot_picker.dart
 ├── features/
-│   ├── auth/               # Login — gotovo identičan
-│   ├── dashboard/          # NOVO — lista narudžbi za prihvaćanje
-│   ├── schedule/           # NOVO — moj raspored
-│   ├── chat/               # Slično senioru ali s višestruke konverzacije
-│   └── profile/            # Drugačije sekcije (zarada, dostupnost)
+│   ├── auth/               # Login (social login removed)
+│   ├── onboarding/         # Availability setup
+│   ├── schedule/           # Weekly strip + job detail + decline
+│   ├── statistics/         # Weekly/monthly charts + ratings + reviews
+│   ├── chat/               # Placeholder
+│   └── profile/            # Personal data, availability, settings
 ```
 
 ### Korak 5: U novom chatu reci
+
 > "Pročitaj DESIGN_SYSTEM.md i PROJECT_CONTEXT.md u root-u projekta. Radimo student app za Helpi. Koristi ISTI dizajn sustav. Krećemo s [ekran koji želiš]."

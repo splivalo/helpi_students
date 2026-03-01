@@ -1,7 +1,7 @@
 # Architecture
 
 > Technical reference for the Helpi Student Flutter app.  
-> Last updated: February 2025.
+> Last updated: March 2026.
 
 ---
 
@@ -16,13 +16,15 @@ lib/
 │   └── theme.dart                         # Centralized ThemeData (identical to Senior app)
 ├── auth/
 │   └── presentation/
-│       └── login_screen.dart              # Login/Register with social auth buttons
+│       └── login_screen.dart              # Login/Register (social login removed)
 ├── core/
 │   ├── l10n/
 │   │   ├── app_strings.dart               # i18n strings (HR + EN) — Gemini Hybrid pattern
 │   │   └── locale_notifier.dart           # ValueNotifier<Locale> for language switching
 │   ├── models/
-│   │   └── availability_model.dart        # DayAvailability + AvailabilityNotifier
+│   │   ├── availability_model.dart        # DayAvailability + AvailabilityNotifier
+│   │   ├── job_model.dart                 # Job, ServiceType, JobStatus, MockJobs (21 jobs)
+│   │   └── review_model.dart              # ReviewModel (rating + comment + date)
 │   └── widgets/
 │       └── time_slot_picker.dart          # Custom CupertinoPicker time picker
 └── features/
@@ -32,17 +34,16 @@ lib/
     ├── chat/
     │   └── presentation/
     │       └── chat_list_screen.dart       # Chat / Messages (placeholder)
+    ├── schedule/
+    │   └── presentation/
+    │       ├── schedule_screen.dart        # Weekly strip + daily job list
+    │       └── job_detail_screen.dart      # Job detail view + review display + decline
+    ├── statistics/
+    │   └── presentation/
+    │       └── statistics_screen.dart      # Weekly/monthly bar charts + avg rating + reviews
     └── profile/
         └── presentation/
             └── profile_screen.dart        # Student profile (data, availability, settings)
-```
-
-### Planned (not yet implemented)
-
-```
-└── features/
-    ├── schedule/                           # Raspored — assigned jobs calendar
-    └── statistics/                         # Statistika — earnings, completed jobs
 ```
 
 ---
@@ -62,6 +63,16 @@ lib/
 | ---------------------- | -------------------------------------- | ------------------------------------------- | ---------------------------- |
 | `LocaleNotifier`       | `ValueNotifier<Locale>`                | app.dart ↔ ProfileScreen ↔ LoginScreen      | Language switching (HR/EN)   |
 | `AvailabilityNotifier` | `ValueNotifier<List<DayAvailability>>` | app.dart ↔ OnboardingScreen ↔ ProfileScreen | 7-day availability (Mon–Sun) |
+
+### Key models
+
+| Class         | File                | Purpose                                                            |
+| ------------- | ------------------- | ------------------------------------------------------------------ |
+| `Job`         | `job_model.dart`    | Job with date, time, senior, address, serviceTypes, status, review |
+| `ServiceType` | `job_model.dart`    | Enum: shopping, houseHelp, socializing, walking, escort, other     |
+| `JobStatus`   | `job_model.dart`    | Enum: assigned, completed, cancelled                               |
+| `ReviewModel` | `review_model.dart` | Rating (1-5) + comment + date string                               |
+| `MockJobs`    | `job_model.dart`    | 21 mock jobs spanning ~45 days for chart/schedule data             |
 
 ### Why no Riverpod / Bloc / Provider?
 
@@ -123,18 +134,21 @@ The student app uses the **exact same** design system as the Senior app. Full de
 
 ### Quick reference
 
-| Token            | Value                                                          |
-| ---------------- | -------------------------------------------------------------- |
-| Primary (Coral)  | `#EF5B5B` — CTA buttons, active tab underline                  |
-| Secondary (Teal) | `#009D9D` — outlined buttons, chips, input icons, nav selected |
-| Background       | `#F9F7F4` — scaffold background (warm off-white)               |
-| Surface          | `#FFFFFF` — cards, inputs, bottom nav                          |
-| Text primary     | `#2D2D2D`                                                      |
-| Text secondary   | `#757575`                                                      |
-| Border           | `#E0E0E0`                                                      |
-| Border radius    | 16 (standard), 12 (small chips), 24 (chat), 20 (bottom sheet)  |
-| Button height    | 56px, full width                                               |
-| Elevation        | 0 everywhere                                                   |
+| Token            | Value                                                                      |
+| ---------------- | -------------------------------------------------------------------------- |
+| Primary (Coral)  | `#EF5B5B` — CTA buttons, active tab underline                              |
+| Secondary (Teal) | `#009D9D` — outlined buttons, chips, input icons, nav selected, bar charts |
+| Background       | `#F9F7F4` — scaffold background (warm off-white)                           |
+| Surface          | `#FFFFFF` — cards, inputs, bottom nav                                      |
+| Text primary     | `#2D2D2D`                                                                  |
+| Text secondary   | `#757575`                                                                  |
+| Border           | `#E0E0E0`                                                                  |
+| Chip bg          | `#F0F0F0` — service chips, total hours label bg                            |
+| Star yellow      | `#FFC107` — review stars                                                   |
+| Senior bg        | `#E0F5F5` — senior avatar circle bg                                        |
+| Border radius    | 16 (standard), 12 (small chips/status), 24 (chat), 20 (bottom sheet)       |
+| Button height    | 56px, full width                                                           |
+| Elevation        | 0 everywhere                                                               |
 
 ### Theme file
 
@@ -146,12 +160,12 @@ The student app uses the **exact same** design system as the Senior app. Full de
 
 ### Tab structure (BottomNavigationBar)
 
-| Index | Tab                     | Icon             | Screen          |
-| ----- | ----------------------- | ---------------- | --------------- |
-| 0     | Raspored (Schedule)     | `calendar_today` | Placeholder     |
-| 1     | Poruke (Messages)       | `chat_bubble`    | `ChatScreen`    |
-| 2     | Statistika (Statistics) | `bar_chart`      | Placeholder     |
-| 3     | Profil (Profile)        | `person`         | `ProfileScreen` |
+| Index | Tab                     | Icon             | Screen             |
+| ----- | ----------------------- | ---------------- | ------------------ |
+| 0     | Raspored (Schedule)     | `calendar_today` | `ScheduleScreen`   |
+| 1     | Poruke (Messages)       | `chat_bubble`    | `ChatScreen`       |
+| 2     | Statistika (Statistics) | `bar_chart`      | `StatisticsScreen` |
+| 3     | Profil (Profile)        | `person`         | `ProfileScreen`    |
 
 ### Implementation
 

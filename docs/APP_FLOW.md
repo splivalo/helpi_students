@@ -1,7 +1,7 @@
 # App Flow
 
 > Step-by-step description of every user flow in the Helpi Student app.  
-> Last updated: February 2025.
+> Last updated: March 2026.
 
 ---
 
@@ -82,18 +82,114 @@ First-time setup after login. Student sets their weekly availability before ente
 
 4 tabs via `BottomNavigationBar` + `IndexedStack`:
 
-| Tab | Label      | Screen        | Status          |
-| --- | ---------- | ------------- | --------------- |
-| 0   | Raspored   | Placeholder   | Not implemented |
-| 1   | Poruke     | ChatScreen    | Placeholder     |
-| 2   | Statistika | Placeholder   | Not implemented |
-| 3   | Profil     | ProfileScreen | Complete        |
+| Tab | Label      | Screen           | Status      |
+| --- | ---------- | ---------------- | ----------- |
+| 0   | Raspored   | ScheduleScreen   | Complete    |
+| 1   | Poruke     | ChatScreen       | Placeholder |
+| 2   | Statistika | StatisticsScreen | Complete    |
+| 3   | Profil     | ProfileScreen    | Complete    |
 
 Haptic feedback on every tab tap.
 
 ---
 
-## 5. Profile Screen
+## 5. Schedule Screen (Raspored)
+
+**File:** `lib/features/schedule/presentation/schedule_screen.dart`
+
+### What the user sees
+
+- **AppBar:** "Raspored" title
+- **Weekly strip:** Mon–Sun horizontal scroll, today highlighted (teal circle), selectable days
+- **Daily job list:** Cards for each job on the selected day
+
+### Job card layout (simplified)
+
+Each card shows 3 rows separated by dividers:
+
+1. **Time + status** — "09:00 – 11:00" left, status chip right (assigned=teal, completed=grey, cancelled=red)
+2. **Senior name** — person icon + "Ivka Mandić"
+3. **Address** — place icon + "Ilica 45, Zagreb"
+4. **Footer** — "Prikaži više >" teal link
+
+### Behavior
+
+- Tap on a day in the weekly strip → shows that day's jobs
+- Tap "Prikaži više >" → navigates to Job Detail screen
+- Empty state shown if no jobs for selected day
+
+---
+
+## 6. Job Detail Screen
+
+**File:** `lib/features/schedule/presentation/job_detail_screen.dart`
+
+### What the user sees
+
+1. **AppBar:** "Detalji posla" title
+2. **Time section:** clock icon + "09:00 – 11:00"
+3. **Senior section:** person icon + name
+4. **Address section:** place icon + full address
+5. **Service types:** work icon + Wrap of grey chips (e.g. "Kupovina", "Čišćenje")
+6. **Status badge:** colored chip (Dodijeljen/Završen/Otkazan)
+7. **Review section** (if completed + has review): star rating + comment
+8. **Decline button** (if assigned + >24h): coral "Otkaži posao" button
+
+### Decline flow
+
+- Tap "Otkaži posao" → bottom sheet with TextFormField for reason
+- Must enter ≥10 characters
+- Submit changes job status to cancelled
+- **CRITICAL:** Do NOT call `controller.dispose()` in bottom sheets — causes crash
+
+### Service chips
+
+- Icon: `work_outline` (grey, 20px) on the left
+- Chips: text-only, #F0F0F0 background, #757575 text, horizontal:12 vertical:2 padding, borderRadius:12
+- `crossAxisAlignment: CrossAxisAlignment.start` — icon aligns with first row of chips
+
+---
+
+## 7. Statistics Screen (Statistika)
+
+**File:** `lib/features/statistics/presentation/statistics_screen.dart`
+
+### What the user sees
+
+1. **Tjedni pregled (Weekly review):**
+   - Navigation arrows (< >) to change week
+   - Date range label "dd.mm. – dd.mm.yyyy."
+   - Bar chart: 7 teal bars (Mon–Sun), height proportional to hours worked
+   - Comparison: trending up/down/flat icon + "X% više/manje sati nego prošli tjedan"
+   - Total hours label in grey pill
+
+2. **Mjesečni pregled (Monthly review):**
+   - Navigation arrows to change month
+   - Month name (Siječanj, Veljača, ...)
+   - Bar chart: bars per week of month, date labels below
+   - Comparison with previous month
+   - Total hours label
+
+3. **Prosječna ocjena (Average rating):**
+   - 5 star icons (filled/empty) + numeric value (e.g. "4.6")
+
+4. **Posljednje ocjene (Recent reviews):**
+   - Max 3 review cards shown
+   - "Prikaži sve ocjene" button if >3 reviews
+   - Opens DraggableScrollableSheet bottom sheet with full list
+   - Each review card: avatar circle + senior name + date + stars + comment
+
+### Technical
+
+- StatefulWidget (needs state for week/month navigation)
+- Pure Flutter bar charts (Container-based, no external packages)
+- Data computed from MockJobs.all filtered by status == completed
+- HapticFeedback.selectionClick() on navigation arrows
+- SafeArea(top: false) on the all-reviews bottom sheet ListView
+
+---
+
+## 8. Profile Screen
 
 **File:** `lib/features/profile/presentation/profile_screen.dart`
 
@@ -119,7 +215,7 @@ Haptic feedback on every tab tap.
 
 ---
 
-## 6. Time Slot Picker
+## 9. Time Slot Picker
 
 **File:** `lib/core/widgets/time_slot_picker.dart`
 
@@ -157,7 +253,7 @@ Future<TimeOfDay?> showTimeSlotPicker({
 
 ---
 
-## 7. Chat Screen
+## 10. Chat Screen
 
 **File:** `lib/features/chat/presentation/chat_list_screen.dart`
 
@@ -168,7 +264,7 @@ Currently a placeholder. Will support communication with:
 
 ---
 
-## 8. Logout Flow
+## 11. Logout Flow
 
 ```
 ProfileScreen → Logout button → onLogout callback
@@ -181,7 +277,7 @@ ProfileScreen → Logout button → onLogout callback
 
 ---
 
-## 9. Flow Diagram
+## 12. Flow Diagram
 
 ```
 ┌─────────────┐
@@ -189,12 +285,16 @@ ProfileScreen → Logout button → onLogout callback
 └──────┬──────┘
        │
        ▼
-┌─────────────┐     ┌──────────────────┐     ┌───────────────┐
-│ LoginScreen  │────▶│ OnboardingScreen  │────▶│   MainShell   │
-│              │     │ (availability)    │     │ (4 tabs)      │
-└─────────────┘     └──────────────────┘     └───────┬───────┘
-       ▲                                              │
-       │              ┌──────────────────┐            │
-       └──────────────│ Logout (Profile) │◀───────────┘
+┌─────────────┐     ┌──────────────────┐     ┌───────────────────────────────┐
+│ LoginScreen  │────▶│ OnboardingScreen  │────▶│          MainShell            │
+│              │     │ (availability)    │     │   (4 tabs)                    │
+└─────────────┘     └──────────────────┘     ├───────────────────────────────┤
+       ▲                                      │ 0: ScheduleScreen             │
+       │                                      │    └─▶ JobDetailScreen         │
+       │                                      │ 1: ChatScreen (placeholder)   │
+       │                                      │ 2: StatisticsScreen           │
+       │                                      │    └─▶ All Reviews BottomSheet│
+       │              ┌──────────────────┐    │ 3: ProfileScreen              │
+       └──────────────│ Logout (Profile) │◀───┴───────────────────────────────┘
                       └──────────────────┘
 ```
