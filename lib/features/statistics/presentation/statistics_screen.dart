@@ -638,12 +638,15 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   ),
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: reviews.length,
-                    itemBuilder: (ctx, i) =>
-                        _buildReviewCard(theme, reviews[i]),
+                  child: SafeArea(
+                    top: false,
+                    child: ListView.builder(
+                      controller: scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: reviews.length,
+                      itemBuilder: (ctx, i) =>
+                          _buildReviewCard(theme, reviews[i]),
+                    ),
                   ),
                 ),
               ],
