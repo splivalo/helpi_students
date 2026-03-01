@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:helpi_student/core/models/review_model.dart';
+
 /// Tip usluge koju student obavlja.
 enum ServiceType { shopping, houseHelp, socializing, walking, escort, other }
 
@@ -13,22 +15,24 @@ class Job {
     required this.date,
     required this.from,
     required this.to,
-    required this.serviceType,
+    required this.serviceTypes,
     required this.seniorName,
     required this.address,
     this.status = JobStatus.assigned,
     this.notes,
+    this.review,
   });
 
   final String id;
   final DateTime date;
   final TimeOfDay from;
   final TimeOfDay to;
-  final ServiceType serviceType;
+  final List<ServiceType> serviceTypes;
   final String seniorName;
   final String address;
   final JobStatus status;
   final String? notes;
+  final ReviewModel? review;
 
   /// Može li student otkazati ovaj posao (>24h do početka i status assigned)?
   bool get canDecline {
@@ -61,7 +65,7 @@ class MockJobs {
         date: today,
         from: const TimeOfDay(hour: 9, minute: 0),
         to: const TimeOfDay(hour: 11, minute: 0),
-        serviceType: ServiceType.shopping,
+        serviceTypes: [ServiceType.shopping],
         seniorName: 'Marija Horvat',
         address: 'Ilica 42, Zagreb',
         status: JobStatus.completed,
@@ -73,7 +77,14 @@ class MockJobs {
         date: today,
         from: const TimeOfDay(hour: 12, minute: 0),
         to: const TimeOfDay(hour: 13, minute: 30),
-        serviceType: ServiceType.socializing,
+        serviceTypes: [
+          ServiceType.socializing,
+          ServiceType.shopping,
+          ServiceType.walking,
+          ServiceType.houseHelp,
+          ServiceType.escort,
+          ServiceType.other,
+        ],
         seniorName: 'Ivan Kovačević',
         address: 'Vukovarska 78, Zagreb',
         status: JobStatus.assigned,
@@ -83,7 +94,7 @@ class MockJobs {
         date: today,
         from: const TimeOfDay(hour: 14, minute: 0),
         to: const TimeOfDay(hour: 15, minute: 0),
-        serviceType: ServiceType.escort,
+        serviceTypes: [ServiceType.escort],
         seniorName: 'Stjepan Novak',
         address: 'Vlaška 90, Zagreb',
         status: JobStatus.cancelled,
@@ -94,10 +105,33 @@ class MockJobs {
         date: today,
         from: const TimeOfDay(hour: 16, minute: 0),
         to: const TimeOfDay(hour: 18, minute: 0),
-        serviceType: ServiceType.walking,
+        serviceTypes: [ServiceType.walking],
         seniorName: 'Dragica Perić',
         address: 'Trg bana Jelačića 5, Zagreb',
         status: JobStatus.assigned,
+      ),
+      Job(
+        id: '2d',
+        date: today,
+        from: const TimeOfDay(hour: 18, minute: 30),
+        to: const TimeOfDay(hour: 20, minute: 0),
+        serviceTypes: [ServiceType.houseHelp],
+        seniorName: 'Božena Šimunić',
+        address: 'Ozaljska 22, Zagreb',
+        status: JobStatus.assigned,
+        notes:
+            'Usisati stan, oprati suđe i obrisati prašinu u dnevnom boravku.',
+      ),
+      Job(
+        id: '2e',
+        date: today,
+        from: const TimeOfDay(hour: 20, minute: 30),
+        to: const TimeOfDay(hour: 21, minute: 30),
+        serviceTypes: [ServiceType.other],
+        seniorName: 'Franjo Kolar',
+        address: 'Dubrava 150, Zagreb',
+        status: JobStatus.assigned,
+        notes: 'Pomoć s instalacijom TV aplikacija i podešavanjem mobitela.',
       ),
 
       // Sutra — 1 posao
@@ -106,7 +140,7 @@ class MockJobs {
         date: today.add(const Duration(days: 1)),
         from: const TimeOfDay(hour: 10, minute: 0),
         to: const TimeOfDay(hour: 12, minute: 0),
-        serviceType: ServiceType.escort,
+        serviceTypes: [ServiceType.escort],
         seniorName: 'Ana Babić',
         address: 'Heinzelova 15, Zagreb',
         status: JobStatus.assigned,
@@ -119,7 +153,7 @@ class MockJobs {
         date: today.add(const Duration(days: 2)),
         from: const TimeOfDay(hour: 8, minute: 0),
         to: const TimeOfDay(hour: 10, minute: 0),
-        serviceType: ServiceType.houseHelp,
+        serviceTypes: [ServiceType.houseHelp],
         seniorName: 'Josip Matić',
         address: 'Savska 101, Zagreb',
         status: JobStatus.assigned,
@@ -131,7 +165,7 @@ class MockJobs {
         date: today.add(const Duration(days: 4)),
         from: const TimeOfDay(hour: 15, minute: 0),
         to: const TimeOfDay(hour: 17, minute: 0),
-        serviceType: ServiceType.walking,
+        serviceTypes: [ServiceType.walking],
         seniorName: 'Kata Jurić',
         address: 'Maksimirska 33, Zagreb',
         status: JobStatus.assigned,
@@ -144,7 +178,7 @@ class MockJobs {
         date: today.add(const Duration(days: 5)),
         from: const TimeOfDay(hour: 11, minute: 0),
         to: const TimeOfDay(hour: 13, minute: 0),
-        serviceType: ServiceType.other,
+        serviceTypes: [ServiceType.other],
         seniorName: 'Mirko Tomić',
         address: 'Držićeva 12, Zagreb',
         status: JobStatus.assigned,

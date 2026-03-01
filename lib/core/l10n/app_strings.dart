@@ -247,7 +247,6 @@ class AppStrings {
       'loginSubtitle': 'Prijavite se ili kreirajte račun',
       'loginEmail': 'Email adresa',
       'loginPassword': 'Lozinka',
-      'orContinueWith': 'ili nastavite s',
       'settings': 'Postavke',
       'language': 'Jezik', 'accessData': 'Pristupni podaci',
       'changePassword': 'Promijeni lozinku',
@@ -285,6 +284,9 @@ class AppStrings {
       'jobDeclineConfirm': 'Pošalji',
       'jobDeclineTooLate': 'Nije moguće otkazati manje od 24h prije početka.',
       'jobDeclineSuccess': 'Posao je otkazan.',
+      'rateSenior': 'Ocijeni',
+      'yourReview': 'Vaša ocjena',
+      'reviewSent': 'Ocjena je poslana.',
       'serviceShopping2': 'Kupovina',
       'serviceHouseHelp2': 'Pomoć u kući',
       'serviceSocializing2': 'Društvo',
@@ -579,7 +581,6 @@ class AppStrings {
       'loginSubtitle': 'Sign in or create an account',
       'loginEmail': 'Email address',
       'loginPassword': 'Password',
-      'orContinueWith': 'or continue with',
       'settings': 'Settings',
       'language': 'Language', 'accessData': 'Account details',
       'changePassword': 'Change password',
@@ -617,6 +618,9 @@ class AppStrings {
       'jobDeclineConfirm': 'Submit',
       'jobDeclineTooLate': 'Cannot cancel less than 24h before the start.',
       'jobDeclineSuccess': 'Job cancelled.',
+      'rateSenior': 'Rate',
+      'yourReview': 'Your review',
+      'reviewSent': 'Review sent.',
       'serviceShopping2': 'Shopping',
       'serviceHouseHelp2': 'House help',
       'serviceSocializing2': 'Socializing',
@@ -927,7 +931,6 @@ class AppStrings {
   static String get loginSubtitle => _t('loginSubtitle');
   static String get loginEmail => _t('loginEmail');
   static String get loginPassword => _t('loginPassword');
-  static String get orContinueWith => _t('orContinueWith');
   static String get settings => _t('settings');
   static String get language => _t('language');
   static String get accessData => _t('accessData');
@@ -967,6 +970,9 @@ class AppStrings {
   static String get jobDeclineConfirm => _t('jobDeclineConfirm');
   static String get jobDeclineTooLate => _t('jobDeclineTooLate');
   static String get jobDeclineSuccess => _t('jobDeclineSuccess');
+  static String get rateSenior => _t('rateSenior');
+  static String get yourReview => _t('yourReview');
+  static String get reviewSent => _t('reviewSent');
   static String get serviceShopping2 => _t('serviceShopping2');
   static String get serviceHouseHelp2 => _t('serviceHouseHelp2');
   static String get serviceSocializing2 => _t('serviceSocializing2');

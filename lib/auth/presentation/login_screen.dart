@@ -185,37 +185,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
-
-                    // ── Divider "or continue with" ──
-                    Row(
-                      children: [
-                        const Expanded(child: Divider()),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            AppStrings.orContinueWith,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: const Color(0xFF757575),
-                            ),
-                          ),
-                        ),
-                        const Expanded(child: Divider()),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // ── Social buttons ──
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _socialButtonSvg('assets/images/google_logo.svg'),
-                        const SizedBox(width: 16),
-                        _socialButtonSvg('assets/images/apple_logo.svg'),
-                        const SizedBox(width: 16),
-                        _socialButtonSvg('assets/images/facebook_logo.svg'),
-                      ],
-                    ),
                     const SizedBox(height: 32),
 
                     // ── Toggle login / register ──
@@ -286,24 +255,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _socialButtonSvg(String assetPath) {
-    return GestureDetector(
-      onTap: widget.onLoginSuccess,
-      child: Container(
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFE0E0E0)),
-        ),
-        child: Center(
-          child: SvgPicture.asset(assetPath, width: 24, height: 24),
         ),
       ),
     );

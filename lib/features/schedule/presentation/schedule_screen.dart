@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/models/job_model.dart';
+import 'package:helpi_student/features/schedule/presentation/job_detail_screen.dart';
 
 /// Raspored ekran — tjedni strip + lista poslova za odabrani dan.
 class ScheduleScreen extends StatefulWidget {
@@ -107,40 +108,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return '${dayNames[date.weekday - 1]}, ${_formatDate(date)}';
   }
 
-  String _serviceLabel(ServiceType type) {
-    switch (type) {
-      case ServiceType.shopping:
-        return AppStrings.serviceShopping2;
-      case ServiceType.houseHelp:
-        return AppStrings.serviceHouseHelp2;
-      case ServiceType.socializing:
-        return AppStrings.serviceSocializing2;
-      case ServiceType.walking:
-        return AppStrings.serviceWalking2;
-      case ServiceType.escort:
-        return AppStrings.serviceEscort2;
-      case ServiceType.other:
-        return AppStrings.serviceOther2;
-    }
-  }
-
-  IconData _serviceIcon(ServiceType type) {
-    switch (type) {
-      case ServiceType.shopping:
-        return Icons.shopping_bag_outlined;
-      case ServiceType.houseHelp:
-        return Icons.cleaning_services_outlined;
-      case ServiceType.socializing:
-        return Icons.people_outline;
-      case ServiceType.walking:
-        return Icons.directions_walk_outlined;
-      case ServiceType.escort:
-        return Icons.accessible_forward_outlined;
-      case ServiceType.other:
-        return Icons.more_horiz_outlined;
-    }
-  }
-
   String _statusLabel(JobStatus status) {
     switch (status) {
       case JobStatus.assigned:
@@ -163,99 +130,23 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     }
   }
 
-  Future<void> _showDeclineDialog(Job job) async {
-    final controller = TextEditingController();
-    final theme = Theme.of(context);
-
-    final confirmed = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 24,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppStrings.jobDeclineTitle,
-                style: theme.textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: controller,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  hintText: AppStrings.jobDeclineHint,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(ctx, true),
-                  child: Text(AppStrings.jobDeclineConfirm),
-                ),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                  onPressed: () => Navigator.pop(ctx, false),
-                  child: Text(AppStrings.cancel),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-
-    if (!mounted) return;
-
-    if (confirmed == true) {
-      // Mock: makni posao iz liste
-      setState(() {
-        final index = _jobs.indexWhere((j) => j.id == job.id);
-        if (index >= 0) {
-          _jobs[index] = Job(
-            id: job.id,
-            date: job.date,
-            from: job.from,
-            to: job.to,
-            serviceType: job.serviceType,
-            seniorName: job.seniorName,
-            address: job.address,
-            status: JobStatus.cancelled,
-            notes: job.notes,
-          );
-          _datesWithJobs = _jobs
-              .where((j) => j.status != JobStatus.cancelled)
-              .map((j) => DateTime(j.date.year, j.date.month, j.date.day))
-              .toSet();
-        }
-      });
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppStrings.jobDeclineSuccess),
-          backgroundColor: const Color(0xFF009D9D),
+  void _openJobDetail(Job job) {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => JobDetailScreen(
+          job: job,
+          onJobUpdated: (updated) {
+            setState(() {
+              final idx = _jobs.indexWhere((j) => j.id == updated.id);
+              if (idx != -1) {
+                _jobs[idx] = updated;
+              }
+            });
+          },
         ),
-      );
-    }
+      ),
+    );
   }
 
   @override
@@ -296,7 +187,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             child: todayJobs.isEmpty
                 ? _EmptyDayState(theme: theme, teal: teal)
                 : ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                     itemCount: todayJobs.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 12),
                     itemBuilder: (context, index) {
@@ -306,13 +197,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                         theme: theme,
                         teal: teal,
                         formatTime: _formatTime,
-                        serviceLabel: _serviceLabel,
-                        serviceIcon: _serviceIcon,
                         statusLabel: _statusLabel,
                         statusColor: _statusColor,
-                        onDecline: job.canDecline
-                            ? () => _showDeclineDialog(job)
-                            : null,
+                        onTap: () => _openJobDetail(job),
                       );
                     },
                   ),
@@ -545,187 +432,142 @@ class _JobCard extends StatelessWidget {
     required this.theme,
     required this.teal,
     required this.formatTime,
-    required this.serviceLabel,
-    required this.serviceIcon,
     required this.statusLabel,
     required this.statusColor,
-    this.onDecline,
+    this.onTap,
   });
 
   final Job job;
   final ThemeData theme;
   final Color teal;
   final String Function(TimeOfDay) formatTime;
-  final String Function(ServiceType) serviceLabel;
-  final IconData Function(ServiceType) serviceIcon;
   final String Function(JobStatus) statusLabel;
   final Color Function(JobStatus) statusColor;
-  final VoidCallback? onDecline;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final sColor = statusColor(job.status);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Gornji dio: vrijeme + status chip ──
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Row(
-              children: [
-                Icon(Icons.access_time, size: 18, color: teal),
-                const SizedBox(width: 6),
-                Text(
-                  '${formatTime(job.from)} – ${formatTime(job.to)}',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: sColor.withAlpha(30),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    statusLabel(job.status),
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: sColor,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFE0E0E0)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Gornji dio: vrijeme + status chip ──
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Row(
+                  children: [
+                    Icon(Icons.access_time, size: 20, color: teal),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${formatTime(job.from)} – ${formatTime(job.to)}',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          // ── Korisnik ──
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Icon(Icons.person_outline, size: 20, color: teal),
-                const SizedBox(width: 8),
-                Text(
-                  job.seniorName,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          // ── Usluga ──
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Icon(
-                  serviceIcon(job.serviceType),
-                  size: 20,
-                  color: const Color(0xFF757575),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  serviceLabel(job.serviceType),
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          // ── Adresa ──
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.location_on_outlined,
-                  size: 20,
-                  color: Color(0xFF757575),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    job.address,
-                    style: theme.textTheme.bodySmall,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // ── Napomene (ako postoje) ──
-          if (job.notes != null) ...[
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.notes_outlined,
-                    size: 20,
-                    color: Color(0xFF757575),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      job.notes!,
-                      style: theme.textTheme.bodySmall,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: sColor.withAlpha(30),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        statusLabel(job.status),
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: sColor,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
 
-          // ── Ne mogu gumb ──
-          if (onDecline != null) ...[
-            const Divider(height: 24),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-              child: SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: onDecline,
-                  icon: const Icon(Icons.cancel_outlined, size: 18),
-                  label: Text(AppStrings.jobDecline),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFFEF5B5B),
-                    side: const BorderSide(color: Color(0xFFEF5B5B)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              const Divider(height: 20, thickness: 0.5),
+
+              // ── Korisnik ──
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    Icon(Icons.person_outline, size: 20, color: teal),
+                    const SizedBox(width: 8),
+                    Text(
+                      job.seniorName,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
+                  ],
+                ),
+              ),
+
+              const Divider(height: 20, thickness: 0.5),
+
+              // ── Adresa ──
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on_outlined,
+                      size: 20,
+                      color: Color(0xFF757575),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        job.address,
+                        style: theme.textTheme.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const Divider(height: 20, thickness: 0.5),
+
+              // ── Prikaži više ──
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppStrings.showMore,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: teal,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(Icons.chevron_right, size: 20, color: teal),
+                    ],
                   ),
                 ),
               ),
-            ),
-          ] else
-            const SizedBox(height: 16),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }
