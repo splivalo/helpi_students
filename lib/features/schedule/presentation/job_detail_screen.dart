@@ -56,23 +56,6 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
     }
   }
 
-  IconData _serviceIcon(ServiceType type) {
-    switch (type) {
-      case ServiceType.shopping:
-        return Icons.shopping_bag_outlined;
-      case ServiceType.houseHelp:
-        return Icons.cleaning_services_outlined;
-      case ServiceType.socializing:
-        return Icons.people_outline;
-      case ServiceType.walking:
-        return Icons.elderly_woman_outlined;
-      case ServiceType.escort:
-        return Icons.assist_walker_outlined;
-      case ServiceType.other:
-        return Icons.more_horiz_outlined;
-    }
-  }
-
   String _statusLabel(JobStatus status) {
     switch (status) {
       case JobStatus.assigned:
@@ -304,7 +287,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                     child: Row(
                       children: [
                         const Icon(
-                          Icons.location_on_outlined,
+                          Icons.place_outlined,
                           size: 20,
                           color: Color(0xFF757575),
                         ),
@@ -321,43 +304,45 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
 
                   const SizedBox(height: 8),
 
-                  // ── Usluge (chipovi) ──
+                  // ── Usluge (ikona + chipovi) ──
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: _job.serviceTypes.map((type) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF0F0F0),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                _serviceIcon(type),
-                                size: 16,
-                                color: const Color(0xFF757575),
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                _serviceLabel(type),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF757575),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.work_outline,
+                          size: 20,
+                          color: Color(0xFF757575),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: _job.serviceTypes.map((type) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
                                 ),
-                              ),
-                            ],
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF0F0F0),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  _serviceLabel(type),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF757575),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           ),
-                        );
-                      }).toList(),
+                        ),
+                      ],
                     ),
                   ),
 

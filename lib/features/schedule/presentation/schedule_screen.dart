@@ -526,7 +526,7 @@ class _JobCard extends StatelessWidget {
                 child: Row(
                   children: [
                     const Icon(
-                      Icons.location_on_outlined,
+                      Icons.place_outlined,
                       size: 20,
                       color: Color(0xFF757575),
                     ),
