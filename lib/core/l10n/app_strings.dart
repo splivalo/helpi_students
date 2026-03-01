@@ -294,6 +294,22 @@ class AppStrings {
       'serviceEscort2': 'Pratnja',
       'serviceOther2': 'Ostalo',
 
+      // ── Statistika ───────────────────────────
+      'statsTitle': 'Statistika',
+      'statsTotalJobs': 'Ukupno poslova',
+      'statsTotalHours': 'Odrađeno sati',
+      'statsAvgRating': 'Prosječna ocjena',
+      'statsRecentReviews': 'Posljednje ocjene',
+      'statsNoReviews': 'Još nema ocjena.',
+      'statsWeeklyReview': 'Tjedni pregled',
+      'statsMonthlyReview': 'Mjesečni pregled',
+      'statsTotalHoursValue': '{hours} odrađenih sati ukupno',
+      'statsCompareMore': '{percent}% više sati nego prošli {period}.',
+      'statsCompareLess': '{percent}% manje sati nego prošli {period}.',
+      'statsCompareSame': 'Jednako sati kao prošli {period}.',
+      'statsPeriodWeek': 'tjedan',
+      'statsPeriodMonth': 'mjesec',
+
       // ── Dostupnost (student) ──────────────────
       'availabilitySection': 'Dostupnost',
       'availabilityDescription':
@@ -627,6 +643,24 @@ class AppStrings {
       'serviceWalking2': 'Walking',
       'serviceEscort2': 'Escort',
       'serviceOther2': 'Other',
+
+      // ── Statistics ────────────────────────────
+      'statsTitle': 'Statistics',
+      'statsTotalJobs': 'Total jobs',
+      'statsTotalHours': 'Hours worked',
+      'statsAvgRating': 'Average rating',
+      'statsRecentReviews': 'Recent reviews',
+      'statsNoReviews': 'No reviews yet.',
+      'statsWeeklyReview': 'Weekly review',
+      'statsMonthlyReview': 'Monthly review',
+      'statsTotalHoursValue': '{hours} hours worked total',
+      'statsCompareMore':
+          'Your hours worked are {percent}% higher compared to the previous {period}.',
+      'statsCompareLess':
+          'Your hours worked are {percent}% lower compared to the previous {period}.',
+      'statsCompareSame': 'Same hours as the previous {period}.',
+      'statsPeriodWeek': 'week',
+      'statsPeriodMonth': 'month',
 
       // ── Availability (student) ────────────────
       'availabilitySection': 'Availability',
@@ -979,6 +1013,26 @@ class AppStrings {
   static String get serviceWalking2 => _t('serviceWalking2');
   static String get serviceEscort2 => _t('serviceEscort2');
   static String get serviceOther2 => _t('serviceOther2');
+
+  // ── Statistika ────────────────────────────────
+  static String get statsTitle => _t('statsTitle');
+  static String get statsTotalJobs => _t('statsTotalJobs');
+  static String get statsTotalHours => _t('statsTotalHours');
+  static String get statsAvgRating => _t('statsAvgRating');
+  static String get statsRecentReviews => _t('statsRecentReviews');
+  static String get statsNoReviews => _t('statsNoReviews');
+  static String get statsWeeklyReview => _t('statsWeeklyReview');
+  static String get statsMonthlyReview => _t('statsMonthlyReview');
+  static String statsTotalHoursValue(String hours) =>
+      _t('statsTotalHoursValue', params: {'hours': hours});
+  static String statsCompareMore(String percent, String period) =>
+      _t('statsCompareMore', params: {'percent': percent, 'period': period});
+  static String statsCompareLess(String percent, String period) =>
+      _t('statsCompareLess', params: {'percent': percent, 'period': period});
+  static String statsCompareSame(String period) =>
+      _t('statsCompareSame', params: {'period': period});
+  static String get statsPeriodWeek => _t('statsPeriodWeek');
+  static String get statsPeriodMonth => _t('statsPeriodMonth');
 
   // ── Dostupnost (student) ──────────────────────
   static String get availabilitySection => _t('availabilitySection');

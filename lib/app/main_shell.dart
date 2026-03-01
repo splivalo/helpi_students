@@ -7,6 +7,7 @@ import 'package:helpi_student/core/models/availability_model.dart';
 import 'package:helpi_student/features/chat/presentation/chat_list_screen.dart';
 import 'package:helpi_student/features/profile/presentation/profile_screen.dart';
 import 'package:helpi_student/features/schedule/presentation/schedule_screen.dart';
+import 'package:helpi_student/features/statistics/presentation/statistics_screen.dart';
 
 /// Glavni shell s BottomNavigationBar — 4 studentska taba.
 class MainShell extends StatefulWidget {
@@ -36,7 +37,7 @@ class _MainShellState extends State<MainShell> {
     _screens = [
       const ScheduleScreen(),
       const ChatScreen(),
-      _PlaceholderScreen(title: AppStrings.navStatistics),
+      const StatisticsScreen(),
       ProfileScreen(
         localeNotifier: widget.localeNotifier,
         onLogout: widget.onLogout,
@@ -88,44 +89,6 @@ class _MainShellState extends State<MainShell> {
               icon: const Icon(Icons.person_outline),
               activeIcon: const Icon(Icons.person),
               label: AppStrings.navProfile,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Privremeni placeholder ekran za svaki tab dok se ne implementira
-/// stvarni sadržaj.
-class _PlaceholderScreen extends StatelessWidget {
-  const _PlaceholderScreen({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.construction_outlined,
-              size: 80,
-              color: theme.colorScheme.secondary.withAlpha(100),
-            ),
-            const SizedBox(height: 16),
-            Text(title, style: theme.textTheme.headlineMedium),
-            const SizedBox(height: 8),
-            Text(
-              AppStrings.loading,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: const Color(0xFF757575),
-              ),
             ),
           ],
         ),
