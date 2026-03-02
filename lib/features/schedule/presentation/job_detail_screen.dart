@@ -104,75 +104,80 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
         return StatefulBuilder(
           builder: (ctx, setSheetState) {
             final theme = Theme.of(ctx);
-            return Padding(
-              padding: EdgeInsets.fromLTRB(
-                24,
-                24,
-                24,
-                24 + MediaQuery.of(ctx).viewInsets.bottom,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '${AppStrings.rateSenior}: ${_job.seniorName}',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (i) {
-                      return GestureDetector(
-                        onTap: () {
-                          HapticFeedback.selectionClick();
-                          setSheetState(() => selectedRating = i + 1);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: Icon(
-                            i < selectedRating ? Icons.star : Icons.star_border,
-                            color: const Color(0xFFFFC107),
-                            size: 40,
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: commentCtrl,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: AppStrings.reviewHint,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
+            return SafeArea(
+              top: false,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  24,
+                  24,
+                  24,
+                  24 + MediaQuery.of(ctx).viewInsets.bottom,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${AppStrings.rateSenior}: ${_job.seniorName}',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: selectedRating > 0
-                          ? () {
-                              final now = DateTime.now();
-                              final dateStr =
-                                  '${now.day.toString().padLeft(2, '0')}.${now.month.toString().padLeft(2, '0')}.${now.year}';
-                              final review = ReviewModel(
-                                rating: selectedRating,
-                                comment: commentCtrl.text.trim(),
-                                date: dateStr,
-                              );
-                              Navigator.pop(ctx);
-                              _onReviewSubmitted(review);
-                            }
-                          : null,
-                      child: Text(AppStrings.sendReview),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(5, (i) {
+                        return GestureDetector(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            setSheetState(() => selectedRating = i + 1);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: Icon(
+                              i < selectedRating
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: const Color(0xFFFFC107),
+                              size: 40,
+                            ),
+                          ),
+                        );
+                      }),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: commentCtrl,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        hintText: AppStrings.reviewHint,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: selectedRating > 0
+                            ? () {
+                                final now = DateTime.now();
+                                final dateStr =
+                                    '${now.day.toString().padLeft(2, '0')}.${now.month.toString().padLeft(2, '0')}.${now.year}';
+                                final review = ReviewModel(
+                                  rating: selectedRating,
+                                  comment: commentCtrl.text.trim(),
+                                  date: dateStr,
+                                );
+                                Navigator.pop(ctx);
+                                _onReviewSubmitted(review);
+                              }
+                            : null,
+                        child: Text(AppStrings.sendReview),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },
