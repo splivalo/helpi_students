@@ -8,6 +8,7 @@ import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/l10n/locale_notifier.dart';
 import 'package:helpi_student/core/models/availability_model.dart';
 import 'package:helpi_student/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:helpi_student/features/onboarding/presentation/registration_data_screen.dart';
 
 /// Root widget — upravlja auth stateom, onboardingom i locale-om.
 class HelpiStudentApp extends StatefulWidget {
@@ -22,18 +23,36 @@ class _HelpiStudentAppState extends State<HelpiStudentApp> {
   final _availabilityNotifier = AvailabilityNotifier();
 
   bool _isLoggedIn = false;
+  bool _hasCompletedRegistration = false;
   bool _hasCompletedOnboarding = false;
 
+  /// Login — preskače registraciju i onboarding, ide direktno u app.
   void _handleLogin() {
-    setState(() => _isLoggedIn = true);
+    setState(() {
+      _isLoggedIn = true;
+      _hasCompletedRegistration = true;
+      _hasCompletedOnboarding = true;
+    });
+  }
+
+  /// Register — prolazi kroz osobne podatke → dostupnost → app.
+  void _handleRegister() {
+    setState(() {
+      _isLoggedIn = true;
+    });
   }
 
   void _handleLogout() {
     setState(() {
       _isLoggedIn = false;
+      _hasCompletedRegistration = false;
       _hasCompletedOnboarding = false;
       _availabilityNotifier.reset();
     });
+  }
+
+  void _handleRegistrationComplete() {
+    setState(() => _hasCompletedRegistration = true);
   }
 
   void _handleOnboardingComplete() {
@@ -51,8 +70,12 @@ class _HelpiStudentAppState extends State<HelpiStudentApp> {
     if (!_isLoggedIn) {
       return LoginScreen(
         onLoginSuccess: _handleLogin,
+        onRegisterSuccess: _handleRegister,
         localeNotifier: _localeNotifier,
       );
+    }
+    if (!_hasCompletedRegistration) {
+      return RegistrationDataScreen(onComplete: _handleRegistrationComplete);
     }
     if (!_hasCompletedOnboarding) {
       return OnboardingScreen(

@@ -169,12 +169,12 @@ TextButton.styleFrom(
 - Border radius: 16
 - Padding: horizontal 16, vertical 10
 
-### 5.8 Status Chip (na order karticama)
+### 5.8 Status Chip (na job/order karticama)
 
 - Border radius: 12
-- `U obradi` / `Processing`: teal text + teal/12% background
-- `Aktivna` / `Active`: `#4CAF50` text + green/12% background
-- `Završena` / `Completed`: `#757575` text + grey/12% background
+- `Dodijeljen` / `Assigned`: `#4CAF50` (green) text + `#E8F5E9` background
+- `Završen` / `Completed`: `#757575` (grey) text + `#F0F0F0` background
+- `Otkazan` / `Cancelled`: `#EF5B5B` (coral) text + `#FFEBEE` background
 
 ### 5.9 Social Login Button (krug)
 
@@ -258,7 +258,7 @@ Container(
 ### 5.16 Comparison Row (statistics)
 
 - Trending icon (up/down/flat): 24px
-- Up: teal, Down: `#C62828`, Flat: `#757575`
+- Up: teal, Down: `#EF5B5B` (coral), Flat: `#757575`
 - Text: bodySmall, `#757575`
 
 ### 5.17 Total Hours Pill (statistics)

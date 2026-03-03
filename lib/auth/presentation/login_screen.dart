@@ -9,11 +9,15 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({
     super.key,
     required this.onLoginSuccess,
+    required this.onRegisterSuccess,
     required this.localeNotifier,
   });
 
-  /// Callback kad korisnik "uspješno" klikne Login ili Register.
+  /// Callback kad korisnik klikne Login (ide directno u app).
   final VoidCallback onLoginSuccess;
+
+  /// Callback kad korisnik klikne Register/Dalje (ide na osobne podatke).
+  final VoidCallback onRegisterSuccess;
   final LocaleNotifier localeNotifier;
 
   @override
@@ -165,7 +169,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: widget.onLoginSuccess,
+                        onPressed: _isRegisterMode
+                            ? widget.onRegisterSuccess
+                            : widget.onLoginSuccess,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _coral,
                           foregroundColor: Colors.white,
@@ -180,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: Text(
                           _isRegisterMode
-                              ? AppStrings.registerButton
+                              ? AppStrings.registrationDataNext
                               : AppStrings.loginButton,
                         ),
                       ),

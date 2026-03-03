@@ -31,6 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _lastNameCtrl = TextEditingController(text: 'Horvat');
   final _phoneCtrl = TextEditingController(text: '+385 91 555 1234');
   final _addressCtrl = TextEditingController(text: 'Savska 25, Zagreb');
+  final _facultyCtrl = TextEditingController(text: 'Ekonomski fakultet Zagreb');
+  final _studentIdCardCtrl = TextEditingController(text: '0036512345');
   String _gender = 'F';
   DateTime _dob = DateTime(2002, 5, 10);
 
@@ -70,6 +72,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _lastNameCtrl.dispose();
     _phoneCtrl.dispose();
     _addressCtrl.dispose();
+    _facultyCtrl.dispose();
+    _studentIdCardCtrl.dispose();
     super.dispose();
   }
 
@@ -158,6 +162,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 12),
           _buildField(AppStrings.address, _addressCtrl),
+          const SizedBox(height: 12),
+          _buildField(AppStrings.faculty, _facultyCtrl),
+          const SizedBox(height: 12),
+          _buildField(AppStrings.studentIdCard, _studentIdCardCtrl),
           const SizedBox(height: 32),
 
           // ── DOSTUPNOST ──────────────────────────────

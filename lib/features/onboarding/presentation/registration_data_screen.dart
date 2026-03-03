@@ -1,0 +1,288 @@
+import 'package:flutter/material.dart';
+
+import 'package:helpi_student/core/l10n/app_strings.dart';
+
+/// Registracija — student upisuje osobne podatke prije postavljanja dostupnosti.
+/// Gumb "Dalje" je disabled dok sva obavezna polja nisu popunjena.
+class RegistrationDataScreen extends StatefulWidget {
+  const RegistrationDataScreen({super.key, required this.onComplete});
+
+  final VoidCallback onComplete;
+
+  @override
+  State<RegistrationDataScreen> createState() => _RegistrationDataScreenState();
+}
+
+class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
+  static const _coral = Color(0xFFEF5B5B);
+
+  final _firstNameCtrl = TextEditingController();
+  final _lastNameCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  final _addressCtrl = TextEditingController();
+  final _facultyCtrl = TextEditingController();
+  final _studentIdCardCtrl = TextEditingController();
+
+  String _gender = 'M';
+  DateTime? _dob;
+
+  @override
+  void initState() {
+    super.initState();
+    _firstNameCtrl.addListener(_onFieldChanged);
+    _lastNameCtrl.addListener(_onFieldChanged);
+    _phoneCtrl.addListener(_onFieldChanged);
+    _addressCtrl.addListener(_onFieldChanged);
+    _facultyCtrl.addListener(_onFieldChanged);
+    _studentIdCardCtrl.addListener(_onFieldChanged);
+  }
+
+  void _onFieldChanged() => setState(() {});
+
+  @override
+  void dispose() {
+    _firstNameCtrl.dispose();
+    _lastNameCtrl.dispose();
+    _phoneCtrl.dispose();
+    _addressCtrl.dispose();
+    _facultyCtrl.dispose();
+    _studentIdCardCtrl.dispose();
+    super.dispose();
+  }
+
+  bool get _canProceed =>
+      _firstNameCtrl.text.trim().isNotEmpty &&
+      _lastNameCtrl.text.trim().isNotEmpty &&
+      _phoneCtrl.text.trim().isNotEmpty &&
+      _addressCtrl.text.trim().isNotEmpty &&
+      _facultyCtrl.text.trim().isNotEmpty &&
+      _studentIdCardCtrl.text.trim().isNotEmpty &&
+      _dob != null;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF9F7F4),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 40),
+
+                    // ── Title ──
+                    Text(
+                      AppStrings.registrationDataTitle,
+                      style: theme.textTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      AppStrings.registrationDataSubtitle,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: const Color(0xFF757575),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // ── Ime ──
+                    _buildField(
+                      label: AppStrings.firstName,
+                      controller: _firstNameCtrl,
+                      theme: theme,
+                    ),
+                    const SizedBox(height: 12),
+
+                    // ── Prezime ──
+                    _buildField(
+                      label: AppStrings.lastName,
+                      controller: _lastNameCtrl,
+                      theme: theme,
+                    ),
+                    const SizedBox(height: 12),
+
+                    // ── Spol ──
+                    _buildGenderPicker(theme),
+                    const SizedBox(height: 12),
+
+                    // ── Datum rođenja ──
+                    _buildDatePicker(theme),
+                    const SizedBox(height: 12),
+
+                    // ── Telefon ──
+                    _buildField(
+                      label: AppStrings.phone,
+                      controller: _phoneCtrl,
+                      theme: theme,
+                      keyboardType: TextInputType.phone,
+                    ),
+                    const SizedBox(height: 12),
+
+                    // ── Adresa ──
+                    _buildField(
+                      label: AppStrings.address,
+                      controller: _addressCtrl,
+                      theme: theme,
+                    ),
+                    const SizedBox(height: 12),
+
+                    // ── Fakultet ──
+                    _buildField(
+                      label: AppStrings.faculty,
+                      controller: _facultyCtrl,
+                      theme: theme,
+                      hint: AppStrings.facultyHint,
+                    ),
+                    const SizedBox(height: 12),
+
+                    // ── Broj studentske iskaznice ──
+                    _buildField(
+                      label: AppStrings.studentIdCard,
+                      controller: _studentIdCardCtrl,
+                      theme: theme,
+                      hint: AppStrings.studentIdCardHint,
+                      keyboardType: TextInputType.number,
+                    ),
+                    const SizedBox(height: 32),
+
+                    // ── CTA button ──
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: _canProceed ? widget.onComplete : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _coral,
+                          foregroundColor: Colors.white,
+                          disabledBackgroundColor: const Color(0xFFE0E0E0),
+                          disabledForegroundColor: const Color(0xFF9E9E9E),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 0,
+                          textStyle: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        child: Text(AppStrings.registrationDataNext),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  // ── Helpers ──────────────────────────────────────────
+
+  Widget _buildField({
+    required String label,
+    required TextEditingController controller,
+    required ThemeData theme,
+    TextInputType keyboardType = TextInputType.text,
+    String? hint,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 16),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        labelStyle: TextStyle(
+          color: theme.colorScheme.onSurface.withAlpha(180),
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+        filled: true,
+        fillColor: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildGenderPicker(ThemeData theme) {
+    return InputDecorator(
+      decoration: InputDecoration(
+        labelText: AppStrings.gender,
+        labelStyle: TextStyle(
+          color: theme.colorScheme.onSurface.withAlpha(180),
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+        filled: true,
+        fillColor: Colors.white,
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: _gender,
+          isDense: true,
+          isExpanded: true,
+          onChanged: (v) {
+            if (v != null) setState(() => _gender = v);
+          },
+          style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 16),
+          items: [
+            DropdownMenuItem(value: 'M', child: Text(AppStrings.genderMale)),
+            DropdownMenuItem(value: 'F', child: Text(AppStrings.genderFemale)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDatePicker(ThemeData theme) {
+    final formatted = _dob != null
+        ? '${_dob!.day.toString().padLeft(2, '0')}.${_dob!.month.toString().padLeft(2, '0')}.${_dob!.year}.'
+        : 'DD.MM.GGGG';
+    final hasDate = _dob != null;
+
+    return GestureDetector(
+      onTap: () async {
+        final picked = await showDatePicker(
+          context: context,
+          initialDate: _dob ?? DateTime(2002, 1, 1),
+          firstDate: DateTime(1920),
+          lastDate: DateTime.now(),
+        );
+        if (picked != null && mounted) {
+          setState(() => _dob = picked);
+        }
+      },
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: AppStrings.dateOfBirth,
+          labelStyle: TextStyle(
+            color: theme.colorScheme.onSurface.withAlpha(180),
+          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+          filled: true,
+          fillColor: Colors.white,
+          suffixIcon: Icon(
+            Icons.calendar_today,
+            size: 20,
+            color: theme.colorScheme.secondary,
+          ),
+        ),
+        child: Text(
+          formatted,
+          style: TextStyle(
+            color: hasDate
+                ? theme.colorScheme.onSurface
+                : const Color(0xFF757575),
+            fontSize: 16,
+          ),
+        ),
+      ),
+    );
+  }
+}

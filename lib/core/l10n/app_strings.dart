@@ -319,6 +319,14 @@ class AppStrings {
       'toTime': 'Do',
       'notSet': 'Nije postavljeno',
       'studentData': 'Osobni podaci',
+      'faculty': 'Fakultet',
+      'facultyHint': 'Npr. Ekonomski fakultet Zagreb',
+      'studentIdCard': 'Broj studentske iskaznice',
+      'studentIdCardHint': 'Npr. 0036512345',
+      'registrationDataTitle': 'Vaši podaci',
+      'registrationDataSubtitle':
+          'Ispunite svoje podatke kako bismo mogli kreirati vaš profil.',
+      'registrationDataNext': 'Dalje',
       'onboardingTitle': 'Kada ste slobodni?',
       'onboardingSubtitle':
           'Postavite svoju dostupnost kako bismo vam mogli slati odgovarajuće narudžbe.',
@@ -673,6 +681,14 @@ class AppStrings {
       'toTime': 'To',
       'notSet': 'Not set',
       'studentData': 'Personal info',
+      'faculty': 'Faculty',
+      'facultyHint': 'E.g. Faculty of Economics Zagreb',
+      'studentIdCard': 'Student ID card number',
+      'studentIdCardHint': 'E.g. 0036512345',
+      'registrationDataTitle': 'Your details',
+      'registrationDataSubtitle':
+          'Fill in your details so we can create your profile.',
+      'registrationDataNext': 'Next',
       'onboardingTitle': 'When are you available?',
       'onboardingSubtitle':
           'Set your availability so we can send you relevant orders.',
@@ -1046,6 +1062,13 @@ class AppStrings {
   static String get toTime => _t('toTime');
   static String get notSet => _t('notSet');
   static String get studentData => _t('studentData');
+  static String get faculty => _t('faculty');
+  static String get facultyHint => _t('facultyHint');
+  static String get studentIdCard => _t('studentIdCard');
+  static String get studentIdCardHint => _t('studentIdCardHint');
+  static String get registrationDataTitle => _t('registrationDataTitle');
+  static String get registrationDataSubtitle => _t('registrationDataSubtitle');
+  static String get registrationDataNext => _t('registrationDataNext');
   static String get onboardingTitle => _t('onboardingTitle');
   static String get onboardingSubtitle => _t('onboardingSubtitle');
   static String get onboardingFinish => _t('onboardingFinish');
