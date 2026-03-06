@@ -1,6 +1,6 @@
 # Helpi Student — Progress
 
-> Last updated: March 2026.
+> Last updated: June 2025.
 
 ## Module Completion
 
@@ -17,6 +17,7 @@
 | Statistika (Statistics)                          | ✅ Done                        | 100% |
 | Poruke (Chat / Messages)                         | ⬜ Placeholder                 | 0%   |
 | Documentation                                    | ✅ Done                        | 100% |
+| **DRY Refactor (Phases 1-6)**                    | ✅ Done                        | 100% |
 
 ## Checklist — Completed
 
@@ -48,6 +49,12 @@
 - [x] Statistics screen — weekly + monthly bar charts, comparison %, total hours, avg rating
 - [x] Reviews section — 3 preview + "Prikaži sve" bottom sheet with SafeArea
 - [x] i18n stats strings — HR + EN complete (weekly, monthly, compare, period, showAll)
+- [x] **DRY Refactor Phase 1** — Centralized utilities: `formatters.dart` (formatTime, formatDateFull, formatDateShort, formatDateCompact), `job_helpers.dart` (statusLabel, statusColor, statusBgColor, serviceLabel, dayName), `snackbar_helper.dart` (showHelpiSnackBar)
+- [x] **DRY Refactor Phase 2** — Shared widgets: `star_rating.dart` (read-only + interactive), `review_card.dart` (avatar, name, date, stars, comment), `availability_day_row.dart` (day row + time chips)
+- [x] **DRY Refactor Phase 3** — Theme constants: added `border`, `star`, `avatarBg`, `offWhite`, `textSecondary`, `barBg`, `coral`, `teal` to HelpiTheme
+- [x] **DRY Refactor Phase 4** — i18n keys: `langHrvatski`, `langEnglish`, `appVersion`, `statsDayMon`-`statsDaySun` + `statsDayLabels` list
+- [x] **DRY Refactor Phase 5-6** — All screens updated: replaced duplicated functions, hardcoded colors, hardcoded strings; fixed `mounted` → `context.mounted`; removed dead code
+- [x] flutter analyze: 0 issues maintained (0 errors baseline → 0 issues after refactor)
 
 ## Next Steps (awaiting user confirmation)
 

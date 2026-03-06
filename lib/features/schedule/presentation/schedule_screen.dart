@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/models/job_model.dart';
+import 'package:helpi_student/core/utils/formatters.dart';
+import 'package:helpi_student/core/utils/job_helpers.dart';
 import 'package:helpi_student/features/schedule/presentation/job_detail_screen.dart';
 
 /// Raspored ekran — tjedni strip + lista poslova za odabrani dan.
@@ -78,15 +81,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     });
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day}.${date.month}.${date.year}.';
-  }
+  String _formatDate(DateTime date) => Formatters.formatDateShort(date);
 
-  String _formatTime(TimeOfDay time) {
-    final h = time.hour.toString().padLeft(2, '0');
-    final m = time.minute.toString().padLeft(2, '0');
-    return '$h:$m';
-  }
+  String _formatTime(TimeOfDay time) => Formatters.formatTime(time);
 
   String _dayLabel(DateTime date) {
     final now = DateTime.now();
@@ -108,38 +105,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return '${dayNames[date.weekday - 1]}, ${_formatDate(date)}';
   }
 
-  String _statusLabel(JobStatus status) {
-    switch (status) {
-      case JobStatus.assigned:
-        return AppStrings.jobStatusAssigned;
-      case JobStatus.completed:
-        return AppStrings.jobStatusCompleted;
-      case JobStatus.cancelled:
-        return AppStrings.jobStatusCancelled;
-    }
-  }
+  String _statusLabel(JobStatus status) => JobHelpers.statusLabel(status);
 
-  Color _statusColor(JobStatus status) {
-    switch (status) {
-      case JobStatus.assigned:
-        return const Color(0xFF4CAF50);
-      case JobStatus.completed:
-        return const Color(0xFF757575);
-      case JobStatus.cancelled:
-        return const Color(0xFFEF5B5B);
-    }
-  }
+  Color _statusColor(JobStatus status) => JobHelpers.statusColor(status);
 
-  Color _statusBgColor(JobStatus status) {
-    switch (status) {
-      case JobStatus.assigned:
-        return const Color(0xFFE8F5E9);
-      case JobStatus.completed:
-        return const Color(0xFFF0F0F0);
-      case JobStatus.cancelled:
-        return const Color(0xFFFFEBEE);
-    }
-  }
+  Color _statusBgColor(JobStatus status) => JobHelpers.statusBgColor(status);
 
   void _openJobDetail(Job job) {
     Navigator.push(
@@ -263,7 +233,7 @@ class _WeekStrip extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: Color(0xFFE0E0E0))),
+        border: Border(bottom: BorderSide(color: HelpiTheme.border)),
       ),
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
@@ -328,7 +298,7 @@ class _WeekStrip extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                             color: isSelected
                                 ? Colors.white
-                                : const Color(0xFF757575),
+                                : HelpiTheme.textSecondary,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -365,9 +335,7 @@ class _WeekStrip extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: hasDot
-                                ? (isSelected
-                                      ? Colors.white
-                                      : const Color(0xFFEF5B5B))
+                                ? (isSelected ? Colors.white : HelpiTheme.coral)
                                 : Colors.transparent,
                           ),
                         ),
@@ -423,7 +391,7 @@ class _EmptyDayState extends StatelessWidget {
             Text(
               AppStrings.scheduleNoJobsSubtitle,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: const Color(0xFF757575),
+                color: HelpiTheme.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -473,7 +441,7 @@ class _JobCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE0E0E0)),
+            border: Border.all(color: HelpiTheme.border),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -543,7 +511,7 @@ class _JobCard extends StatelessWidget {
                     const Icon(
                       Icons.place_outlined,
                       size: 20,
-                      color: Color(0xFF757575),
+                      color: HelpiTheme.textSecondary,
                     ),
                     const SizedBox(width: 8),
                     Expanded(

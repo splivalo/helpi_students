@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
+import 'package:helpi_student/core/utils/formatters.dart';
 
 /// Registracija — student upisuje osobne podatke prije postavljanja dostupnosti.
 /// Gumb "Dalje" je disabled dok sva obavezna polja nisu popunjena.
@@ -14,8 +16,6 @@ class RegistrationDataScreen extends StatefulWidget {
 }
 
 class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
-  static const _coral = Color(0xFFEF5B5B);
-
   final _firstNameCtrl = TextEditingController();
   final _lastNameCtrl = TextEditingController();
   final _phoneCtrl = TextEditingController();
@@ -64,7 +64,7 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F7F4),
+      backgroundColor: HelpiTheme.offWhite,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -86,7 +86,7 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
                     Text(
                       AppStrings.registrationDataSubtitle,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: const Color(0xFF757575),
+                        color: HelpiTheme.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -158,10 +158,10 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
                       child: ElevatedButton(
                         onPressed: _canProceed ? widget.onComplete : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _coral,
+                          backgroundColor: HelpiTheme.coral,
                           foregroundColor: Colors.white,
-                          disabledBackgroundColor: const Color(0xFFE0E0E0),
-                          disabledForegroundColor: const Color(0xFF9E9E9E),
+                          disabledBackgroundColor: HelpiTheme.border,
+                          disabledForegroundColor: HelpiTheme.textSecondary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -242,7 +242,7 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
 
   Widget _buildDatePicker(ThemeData theme) {
     final formatted = _dob != null
-        ? '${_dob!.day.toString().padLeft(2, '0')}.${_dob!.month.toString().padLeft(2, '0')}.${_dob!.year}.'
+        ? Formatters.formatDateFull(_dob!)
         : 'DD.MM.GGGG';
     final hasDate = _dob != null;
 
@@ -254,7 +254,7 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
           firstDate: DateTime(1920),
           lastDate: DateTime.now(),
         );
-        if (picked != null && mounted) {
+        if (picked != null && context.mounted) {
           setState(() => _dob = picked);
         }
       },
@@ -278,7 +278,7 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
           style: TextStyle(
             color: hasDate
                 ? theme.colorScheme.onSurface
-                : const Color(0xFF757575),
+                : HelpiTheme.textSecondary,
             fontSize: 16,
           ),
         ),

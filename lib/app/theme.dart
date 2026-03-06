@@ -19,6 +19,16 @@ class HelpiTheme {
   static const Color cardCream = Color(0xFFFFF8E7);
   static const Color cardBlue = Color(0xFFE8F1FB);
 
+  // Zajedničke UI boje (eliminirane iz hardkodiranih Color(...) po ekranima)
+  static const Color border = Color(0xFFE0E0E0);
+  static const Color star = Color(0xFFFFC107);
+  static const Color avatarBg = Color(0xFFE0F5F5);
+  static const Color offWhite = Color(0xFFF9F7F4);
+  static const Color textSecondary = _textSecondary;
+  static const Color barBg = Color(0xFFF0F0F0);
+  static const Color coral = _primary;
+  static const Color teal = _accent;
+
   // ─── Dimenzije gumba ────────────────────────────────────────────
   static const double buttonHeight = 56.0;
   static const double buttonRadius = 16.0;

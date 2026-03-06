@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/l10n/locale_notifier.dart';
 
@@ -25,9 +26,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  static const _coral = Color(0xFFEF5B5B);
-  static const _teal = Color(0xFF009D9D);
-
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   late String _selectedLang = AppStrings.currentLocale.toUpperCase();
@@ -46,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F7F4),
+      backgroundColor: HelpiTheme.offWhite,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -64,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 100,
                       height: 100,
                       decoration: const BoxDecoration(
-                        color: _teal,
+                        color: HelpiTheme.teal,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -92,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       AppStrings.loginSubtitle,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: const Color(0xFF757575),
+                        color: HelpiTheme.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -105,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelText: AppStrings.loginEmail,
                         prefixIcon: const Icon(
                           Icons.email_outlined,
-                          color: _teal,
+                          color: HelpiTheme.teal,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -124,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelText: AppStrings.loginPassword,
                         prefixIcon: const Icon(
                           Icons.lock_outline,
-                          color: _teal,
+                          color: HelpiTheme.teal,
                         ),
                         suffixIcon: GestureDetector(
                           onTap: () {
@@ -136,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             _obscurePassword
                                 ? Icons.visibility_off_outlined
                                 : Icons.visibility_outlined,
-                            color: const Color(0xFF757575),
+                            color: HelpiTheme.textSecondary,
                           ),
                         ),
                         border: OutlineInputBorder(
@@ -158,7 +156,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           child: Text(
                             AppStrings.forgotPassword,
-                            style: TextStyle(color: _teal, fontSize: 14),
+                            style: TextStyle(
+                              color: HelpiTheme.teal,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
@@ -173,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? widget.onRegisterSuccess
                             : widget.onLoginSuccess,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _coral,
+                          backgroundColor: HelpiTheme.coral,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -212,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ? AppStrings.loginButton
                                 : AppStrings.registerButton,
                             style: const TextStyle(
-                              color: _coral,
+                              color: HelpiTheme.coral,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -225,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.language, color: _teal, size: 20),
+                        Icon(Icons.language, color: HelpiTheme.teal, size: 20),
                         const SizedBox(width: 8),
                         DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
@@ -241,14 +242,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 widget.localeNotifier.setLocale(v);
                               }
                             },
-                            items: const [
+                            items: [
                               DropdownMenuItem(
                                 value: 'HR',
-                                child: Text('Hrvatski'),
+                                child: Text(AppStrings.langHrvatski),
                               ),
                               DropdownMenuItem(
                                 value: 'EN',
-                                child: Text('English'),
+                                child: Text(AppStrings.langEnglish),
                               ),
                             ],
                           ),

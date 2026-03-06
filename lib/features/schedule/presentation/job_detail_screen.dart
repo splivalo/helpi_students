@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/models/job_model.dart';
 import 'package:helpi_student/core/models/review_model.dart';
+import 'package:helpi_student/core/utils/formatters.dart';
+import 'package:helpi_student/core/utils/job_helpers.dart';
+import 'package:helpi_student/core/utils/snackbar_helper.dart';
+import 'package:helpi_student/core/widgets/star_rating.dart';
 
 /// Detalji jednog posla — prikazuje sve info + sekcija za ocjenu seniora.
 class JobDetailScreen extends StatefulWidget {
@@ -29,65 +34,17 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
     _job = widget.job;
   }
 
-  String _formatTime(TimeOfDay time) {
-    final h = time.hour.toString().padLeft(2, '0');
-    final m = time.minute.toString().padLeft(2, '0');
-    return '$h:$m';
-  }
+  String _formatTime(TimeOfDay time) => Formatters.formatTime(time);
 
-  String _formatDate(DateTime date) {
-    return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}.';
-  }
+  String _formatDate(DateTime date) => Formatters.formatDateFull(date);
 
-  String _serviceLabel(ServiceType type) {
-    switch (type) {
-      case ServiceType.shopping:
-        return AppStrings.serviceShopping2;
-      case ServiceType.houseHelp:
-        return AppStrings.serviceHouseHelp2;
-      case ServiceType.socializing:
-        return AppStrings.serviceSocializing2;
-      case ServiceType.walking:
-        return AppStrings.serviceWalking2;
-      case ServiceType.escort:
-        return AppStrings.serviceEscort2;
-      case ServiceType.other:
-        return AppStrings.serviceOther2;
-    }
-  }
+  String _serviceLabel(ServiceType type) => JobHelpers.serviceLabel(type);
 
-  String _statusLabel(JobStatus status) {
-    switch (status) {
-      case JobStatus.assigned:
-        return AppStrings.jobStatusAssigned;
-      case JobStatus.completed:
-        return AppStrings.jobStatusCompleted;
-      case JobStatus.cancelled:
-        return AppStrings.jobStatusCancelled;
-    }
-  }
+  String _statusLabel(JobStatus status) => JobHelpers.statusLabel(status);
 
-  Color _statusColor(JobStatus status) {
-    switch (status) {
-      case JobStatus.assigned:
-        return const Color(0xFF4CAF50);
-      case JobStatus.completed:
-        return const Color(0xFF757575);
-      case JobStatus.cancelled:
-        return const Color(0xFFEF5B5B);
-    }
-  }
+  Color _statusColor(JobStatus status) => JobHelpers.statusColor(status);
 
-  Color _statusBgColor(JobStatus status) {
-    switch (status) {
-      case JobStatus.assigned:
-        return const Color(0xFFE8F5E9);
-      case JobStatus.completed:
-        return const Color(0xFFF0F0F0);
-      case JobStatus.cancelled:
-        return const Color(0xFFFFEBEE);
-    }
-  }
+  Color _statusBgColor(JobStatus status) => JobHelpers.statusBgColor(status);
 
   void _showReviewSheet() {
     int selectedRating = 0;
@@ -123,26 +80,13 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(5, (i) {
-                        return GestureDetector(
-                          onTap: () {
-                            HapticFeedback.selectionClick();
-                            setSheetState(() => selectedRating = i + 1);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
-                            child: Icon(
-                              i < selectedRating
-                                  ? Icons.star
-                                  : Icons.star_border,
-                              color: const Color(0xFFFFC107),
-                              size: 40,
-                            ),
-                          ),
-                        );
-                      }),
+                    StarRating(
+                      rating: selectedRating,
+                      size: 40,
+                      onTap: (rating) {
+                        HapticFeedback.selectionClick();
+                        setSheetState(() => selectedRating = rating);
+                      },
                     ),
                     const SizedBox(height: 20),
                     TextField(
@@ -161,9 +105,9 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                       child: ElevatedButton(
                         onPressed: selectedRating > 0
                             ? () {
-                                final now = DateTime.now();
-                                final dateStr =
-                                    '${now.day.toString().padLeft(2, '0')}.${now.month.toString().padLeft(2, '0')}.${now.year}';
+                                final dateStr = Formatters.formatDateFull(
+                                  DateTime.now(),
+                                );
                                 final review = ReviewModel(
                                   rating: selectedRating,
                                   comment: commentCtrl.text.trim(),
@@ -187,7 +131,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
   }
 
   void _onReviewSubmitted(ReviewModel review) {
-    if (!mounted) return;
+    if (!context.mounted) return;
     final updatedJob = Job(
       id: _job.id,
       date: _job.date,
@@ -203,12 +147,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
     setState(() => _job = updatedJob);
     widget.onJobUpdated(updatedJob);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppStrings.reviewSent),
-        backgroundColor: const Color(0xFF009D9D),
-      ),
-    );
+    showHelpiSnackBar(context, AppStrings.reviewSent);
   }
 
   @override
@@ -229,7 +168,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE0E0E0)),
+                border: Border.all(color: HelpiTheme.border),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -284,7 +223,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                         const Icon(
                           Icons.access_time,
                           size: 20,
-                          color: Color(0xFF757575),
+                          color: HelpiTheme.textSecondary,
                         ),
                         const SizedBox(width: 8),
                         Text(
@@ -305,7 +244,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                         const Icon(
                           Icons.place_outlined,
                           size: 20,
-                          color: Color(0xFF757575),
+                          color: HelpiTheme.textSecondary,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -329,7 +268,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                         const Icon(
                           Icons.work_outline,
                           size: 20,
-                          color: Color(0xFF757575),
+                          color: HelpiTheme.textSecondary,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -343,7 +282,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFF0F0F0),
+                                  color: HelpiTheme.barBg,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -351,7 +290,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF757575),
+                                    color: HelpiTheme.textSecondary,
                                   ),
                                 ),
                               );
@@ -373,7 +312,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                           const Icon(
                             Icons.notes_outlined,
                             size: 20,
-                            color: Color(0xFF757575),
+                            color: HelpiTheme.textSecondary,
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -401,7 +340,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE0E0E0)),
+                border: Border.all(color: HelpiTheme.border),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -422,7 +361,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                         width: 44,
                         height: 44,
                         decoration: const BoxDecoration(
-                          color: Color(0xFFE0F5F5),
+                          color: HelpiTheme.avatarBg,
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -454,7 +393,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                             ),
                             label: Text(AppStrings.rateSenior),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFEF5B5B),
+                              backgroundColor: HelpiTheme.coral,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
@@ -490,7 +429,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF9F7F4),
+                        color: HelpiTheme.offWhite,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
@@ -498,16 +437,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                         children: [
                           Row(
                             children: [
-                              ...List.generate(
-                                5,
-                                (i) => Icon(
-                                  i < _job.review!.rating
-                                      ? Icons.star
-                                      : Icons.star_border,
-                                  color: const Color(0xFFFFC107),
-                                  size: 16,
-                                ),
-                              ),
+                              StarRating(rating: _job.review!.rating, size: 16),
                               const Spacer(),
                               Text(
                                 _job.review!.date,
@@ -547,8 +477,8 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                   icon: const Icon(Icons.cancel_outlined, size: 18),
                   label: Text(AppStrings.jobDecline),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFFEF5B5B),
-                    side: const BorderSide(color: Color(0xFFEF5B5B)),
+                    foregroundColor: HelpiTheme.coral,
+                    side: const BorderSide(color: HelpiTheme.coral),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -566,6 +496,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
   Future<void> _showDeclineFromDetail() async {
     final controller = TextEditingController();
     final theme = Theme.of(context);
+    final messenger = ScaffoldMessenger.of(context);
 
     final confirmed = await showModalBottomSheet<bool>(
       context: context,
@@ -626,7 +557,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
       },
     );
 
-    if (!mounted) return;
+    if (!context.mounted) return;
 
     if (confirmed == true) {
       final updatedJob = Job(
@@ -643,11 +574,10 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
       setState(() => _job = updatedJob);
       widget.onJobUpdated(updatedJob);
 
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text(AppStrings.jobDeclineSuccess),
-          backgroundColor: const Color(0xFF009D9D),
+          backgroundColor: HelpiTheme.teal,
         ),
       );
     }

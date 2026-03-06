@@ -333,6 +333,18 @@ class AppStrings {
       'onboardingFinish': 'Završi',
       'onboardingMinDay': 'Odaberite barem 1 dan s postavljenim vremenom.',
 
+      // ── Zajedničko (DRY) ──────────────────────
+      'langHrvatski': 'Hrvatski',
+      'langEnglish': 'English',
+      'appVersion': 'Helpi v1.0.0',
+      'statsDayMon': 'P',
+      'statsDayTue': 'U',
+      'statsDayWed': 'S',
+      'statsDayThu': 'Č',
+      'statsDayFri': 'P',
+      'statsDaySat': 'S',
+      'statsDaySun': 'N',
+
       // ── Parametrizirani ───────────────────────
       'deleteConfirm': 'Obriši {item}?',
       'distanceKm': '{km} km',
@@ -694,6 +706,18 @@ class AppStrings {
           'Set your availability so we can send you relevant orders.',
       'onboardingFinish': 'Finish',
       'onboardingMinDay': 'Select at least 1 day with a time range.',
+
+      // ── Common (DRY) ─────────────────────────
+      'langHrvatski': 'Hrvatski',
+      'langEnglish': 'English',
+      'appVersion': 'Helpi v1.0.0',
+      'statsDayMon': 'M',
+      'statsDayTue': 'T',
+      'statsDayWed': 'W',
+      'statsDayThu': 'T',
+      'statsDayFri': 'F',
+      'statsDaySat': 'S',
+      'statsDaySun': 'S',
 
       // ── Parametrizirani ───────────────────────
       'deleteConfirm': 'Delete {item}?',
@@ -1073,6 +1097,28 @@ class AppStrings {
   static String get onboardingSubtitle => _t('onboardingSubtitle');
   static String get onboardingFinish => _t('onboardingFinish');
   static String get onboardingMinDay => _t('onboardingMinDay');
+
+  // ── Zajedničko (DRY) ──────────────────────────
+  static String get langHrvatski => _t('langHrvatski');
+  static String get langEnglish => _t('langEnglish');
+  static String get appVersion => _t('appVersion');
+  static String get statsDayMon => _t('statsDayMon');
+  static String get statsDayTue => _t('statsDayTue');
+  static String get statsDayWed => _t('statsDayWed');
+  static String get statsDayThu => _t('statsDayThu');
+  static String get statsDayFri => _t('statsDayFri');
+  static String get statsDaySat => _t('statsDaySat');
+  static String get statsDaySun => _t('statsDaySun');
+  static List<String> get statsDayLabels => [
+    statsDayMon,
+    statsDayTue,
+    statsDayWed,
+    statsDayThu,
+    statsDayFri,
+    statsDaySat,
+    statsDaySun,
+  ];
+
   // ── Parametrizirani stringovi ─────────────────
   static String deleteConfirm(String item) =>
       _t('deleteConfirm', params: {'item': item});

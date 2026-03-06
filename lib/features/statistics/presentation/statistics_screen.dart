@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/models/job_model.dart';
 import 'package:helpi_student/core/models/review_model.dart';
+import 'package:helpi_student/core/utils/formatters.dart';
+import 'package:helpi_student/core/widgets/review_card.dart';
+import 'package:helpi_student/core/widgets/star_rating.dart';
 
-/// Statistika ekran — tjedni/mjesečni pregled sati + prosječna ocjena.
+/// Statistika ekran â€” tjedni/mjeseÄni pregled sati + prosjeÄna ocjena.
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
 
@@ -14,13 +18,6 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  static const _teal = Color(0xFF009D9D);
-  static const _grey = Color(0xFF757575);
-  static const _cardBorder = Color(0xFFE0E0E0);
-  static const _star = Color(0xFFFFC107);
-  static const _offWhite = Color(0xFFF9F7F4);
-  static const _barBg = Color(0xFFF0F0F0);
-
   late DateTime _currentWeekStart;
   late DateTime _currentMonthStart;
 
@@ -113,27 +110,25 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   // Format helpers
 
-  String _fmtDate(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.';
+  String _fmtDate(DateTime d) => Formatters.formatDateCompact(d);
 
-  String _fmtDateFull(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}.';
+  String _fmtDateFull(DateTime d) => Formatters.formatDateFull(d);
 
-  static const _dayLabels = ['P', 'U', 'S', 'Č', 'P', 'S', 'N'];
+  List<String> get _dayLabels => AppStrings.statsDayLabels;
 
-  static const _monthNames = [
-    'Siječanj',
-    'Veljača',
-    'Ožujak',
-    'Travanj',
-    'Svibanj',
-    'Lipanj',
-    'Srpanj',
-    'Kolovoz',
-    'Rujan',
-    'Listopad',
-    'Studeni',
-    'Prosinac',
+  List<String> get _monthNames => [
+    AppStrings.monthName(1),
+    AppStrings.monthName(2),
+    AppStrings.monthName(3),
+    AppStrings.monthName(4),
+    AppStrings.monthName(5),
+    AppStrings.monthName(6),
+    AppStrings.monthName(7),
+    AppStrings.monthName(8),
+    AppStrings.monthName(9),
+    AppStrings.monthName(10),
+    AppStrings.monthName(11),
+    AppStrings.monthName(12),
   ];
 
   // Navigation
@@ -177,7 +172,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: _offWhite,
+      backgroundColor: HelpiTheme.offWhite,
       appBar: AppBar(
         title: Text(
           AppStrings.statsTitle,
@@ -223,7 +218,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _cardBorder),
+        border: Border.all(color: HelpiTheme.border),
       ),
       child: Column(
         children: [
@@ -238,16 +233,22 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: const Icon(Icons.chevron_left, color: _grey),
+                icon: const Icon(
+                  Icons.chevron_left,
+                  color: HelpiTheme.textSecondary,
+                ),
                 onPressed: _prevWeek,
                 splashRadius: 20,
               ),
               Text(
-                '${_fmtDate(_currentWeekStart)} – ${_fmtDateFull(weekEnd)}',
+                '${_fmtDate(_currentWeekStart)} â€“ ${_fmtDateFull(weekEnd)}',
                 style: theme.textTheme.bodyMedium,
               ),
               IconButton(
-                icon: const Icon(Icons.chevron_right, color: _grey),
+                icon: const Icon(
+                  Icons.chevron_right,
+                  color: HelpiTheme.textSecondary,
+                ),
                 onPressed: _nextWeek,
                 splashRadius: 20,
               ),
@@ -270,14 +271,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         if (h > 0)
                           Text(
                             '${h.toStringAsFixed(0)}h',
-                            style: const TextStyle(fontSize: 10, color: _grey),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: HelpiTheme.textSecondary,
+                            ),
                           ),
                         const SizedBox(height: 4),
                         Container(
                           height: maxH > 0 ? 100 * barRatio : 0,
                           constraints: const BoxConstraints(minHeight: 4),
                           decoration: BoxDecoration(
-                            color: h > 0 ? _teal : _barBg,
+                            color: h > 0 ? HelpiTheme.teal : HelpiTheme.barBg,
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
@@ -287,7 +291,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: _grey,
+                            color: HelpiTheme.textSecondary,
                           ),
                         ),
                       ],
@@ -309,7 +313,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             decoration: BoxDecoration(
-              color: _barBg,
+              color: HelpiTheme.barBg,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
@@ -344,7 +348,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _cardBorder),
+        border: Border.all(color: HelpiTheme.border),
       ),
       child: Column(
         children: [
@@ -359,7 +363,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: const Icon(Icons.chevron_left, color: _grey),
+                icon: const Icon(
+                  Icons.chevron_left,
+                  color: HelpiTheme.textSecondary,
+                ),
                 onPressed: _prevMonth,
                 splashRadius: 20,
               ),
@@ -368,7 +375,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 style: theme.textTheme.bodyMedium,
               ),
               IconButton(
-                icon: const Icon(Icons.chevron_right, color: _grey),
+                icon: const Icon(
+                  Icons.chevron_right,
+                  color: HelpiTheme.textSecondary,
+                ),
                 onPressed: _nextMonth,
                 splashRadius: 20,
               ),
@@ -394,7 +404,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                               '${w.hours.toStringAsFixed(0)}h',
                               style: const TextStyle(
                                 fontSize: 10,
-                                color: _grey,
+                                color: HelpiTheme.textSecondary,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -404,7 +414,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           height: maxH > 0 ? 100 * barRatio : 0,
                           constraints: const BoxConstraints(minHeight: 4),
                           decoration: BoxDecoration(
-                            color: w.hours > 0 ? _teal : _barBg,
+                            color: w.hours > 0
+                                ? HelpiTheme.teal
+                                : HelpiTheme.barBg,
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
@@ -412,7 +424,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         Text(
                           '${_fmtDate(w.from)}\n${_fmtDate(w.to)}',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 9, color: _grey),
+                          style: const TextStyle(
+                            fontSize: 9,
+                            color: HelpiTheme.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -433,7 +448,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             decoration: BoxDecoration(
-              color: _barBg,
+              color: HelpiTheme.barBg,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
@@ -466,21 +481,21 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
     if (previous == 0) {
       text = AppStrings.statsCompareMore('100', period);
-      color = _teal;
+      color = HelpiTheme.teal;
       icon = Icons.trending_up;
     } else if (current == previous) {
       text = AppStrings.statsCompareSame(period);
-      color = _grey;
+      color = HelpiTheme.textSecondary;
       icon = Icons.trending_flat;
     } else {
       final pct = (((current - previous).abs() / previous) * 100).round();
       if (current > previous) {
         text = AppStrings.statsCompareMore(pct.toString(), period);
-        color = _teal;
+        color = HelpiTheme.teal;
         icon = Icons.trending_up;
       } else {
         text = AppStrings.statsCompareLess(pct.toString(), period);
-        color = const Color(0xFFEF5B5B);
+        color = HelpiTheme.coral;
         icon = Icons.trending_down;
       }
     }
@@ -492,7 +507,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         Expanded(
           child: Text(
             text,
-            style: theme.textTheme.bodySmall?.copyWith(color: _grey),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: HelpiTheme.textSecondary,
+            ),
           ),
         ),
       ],
@@ -509,7 +526,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _cardBorder),
+        border: Border.all(color: HelpiTheme.border),
       ),
       child: Column(
         children: [
@@ -520,26 +537,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(5, (i) {
-              final filled = i < avg.round();
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Icon(
-                  filled ? Icons.star : Icons.star_border,
-                  size: 36,
-                  color: _star,
-                ),
-              );
-            }),
-          ),
+          StarRating(rating: avg.round(), size: 36),
           const SizedBox(height: 8),
           Text(
-            avg > 0 ? avg.toStringAsFixed(1) : '–',
+            avg > 0 ? avg.toStringAsFixed(1) : 'â€“',
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color: _teal,
+              color: HelpiTheme.teal,
             ),
           ),
         ],
@@ -572,17 +576,21 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: _cardBorder),
+              border: Border.all(color: HelpiTheme.border),
             ),
             child: Center(
               child: Text(
                 AppStrings.statsNoReviews,
-                style: theme.textTheme.bodyMedium?.copyWith(color: _grey),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: HelpiTheme.textSecondary,
+                ),
               ),
             ),
           )
         else ...[
-          ...preview.map((r) => _buildReviewCard(theme, r)),
+          ...preview.map(
+            (r) => ReviewCard(seniorName: r.seniorName, review: r.review),
+          ),
           if (hasMore)
             Center(
               child: TextButton(
@@ -590,7 +598,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 child: Text(
                   AppStrings.statsShowAllReviews,
                   style: const TextStyle(
-                    color: _teal,
+                    color: HelpiTheme.teal,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -606,7 +614,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: _offWhite,
+      backgroundColor: HelpiTheme.offWhite,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -644,8 +652,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       controller: scrollController,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       itemCount: reviews.length,
-                      itemBuilder: (ctx, i) =>
-                          _buildReviewCard(theme, reviews[i]),
+                      itemBuilder: (ctx, i) => ReviewCard(
+                        seniorName: reviews[i].seniorName,
+                        review: reviews[i].review,
+                      ),
                     ),
                   ),
                 ),
@@ -654,69 +664,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           },
         );
       },
-    );
-  }
-
-  Widget _buildReviewCard(ThemeData theme, _ReviewEntry entry) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: _cardBorder),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFE0F5F5),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.person_outline,
-                    size: 20,
-                    color: _teal,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    entry.seniorName,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Text(
-                  entry.review.date,
-                  style: theme.textTheme.bodySmall?.copyWith(color: _grey),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: List.generate(5, (i) {
-                return Icon(
-                  i < entry.review.rating ? Icons.star : Icons.star_border,
-                  size: 20,
-                  color: _star,
-                );
-              }),
-            ),
-            if (entry.review.comment.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(entry.review.comment, style: theme.textTheme.bodySmall),
-            ],
-          ],
-        ),
-      ),
     );
   }
 }

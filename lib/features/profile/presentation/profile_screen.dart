@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/l10n/locale_notifier.dart';
 import 'package:helpi_student/core/models/availability_model.dart';
+import 'package:helpi_student/core/utils/formatters.dart';
+import 'package:helpi_student/core/widgets/availability_day_row.dart';
 import 'package:helpi_student/core/widgets/time_slot_picker.dart';
 
-/// Profil ekran — pristupni podaci, dostupnost, jezik, uvjeti, odjava.
+/// Profil ekran â€” pristupni podaci, dostupnost, jezik, uvjeti, odjava.
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({
     super.key,
@@ -23,10 +26,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // ── Pristupni podaci ──────────────────────────
+  // â”€â”€ Pristupni podaci â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   final _emailCtrl = TextEditingController(text: 'ana.student@email.com');
 
-  // ── Osobni podaci studenta ─────────────────────
+  // â”€â”€ Osobni podaci studenta â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   final _firstNameCtrl = TextEditingController(text: 'Ana');
   final _lastNameCtrl = TextEditingController(text: 'Horvat');
   final _phoneCtrl = TextEditingController(text: '+385 91 555 1234');
@@ -36,34 +39,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _gender = 'F';
   DateTime _dob = DateTime(2002, 5, 10);
 
-  // ── Ostalo ────────────────────────────────────
+  // â”€â”€ Ostalo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   late String _selectedLang = AppStrings.currentLocale.toUpperCase();
   bool _isEditing = false;
   bool _agreedToTerms = true;
 
-  // ── Dostupnost — čita/piše iz dijeljenog notifiera ─────
+  // â”€â”€ Dostupnost â€” Äita/piÅ¡e iz dijeljenog notifiera â”€â”€â”€â”€â”€
   List<DayAvailability> get _availability => widget.availabilityNotifier.value;
-
-  String _dayName(String key) {
-    switch (key) {
-      case 'dayMonFull':
-        return AppStrings.dayMonFull;
-      case 'dayTueFull':
-        return AppStrings.dayTueFull;
-      case 'dayWedFull':
-        return AppStrings.dayWedFull;
-      case 'dayThuFull':
-        return AppStrings.dayThuFull;
-      case 'dayFriFull':
-        return AppStrings.dayFriFull;
-      case 'daySatFull':
-        return AppStrings.daySatFull;
-      case 'daySunFull':
-        return AppStrings.daySunFull;
-      default:
-        return key;
-    }
-  }
 
   @override
   void dispose() {
@@ -75,10 +57,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _facultyCtrl.dispose();
     _studentIdCardCtrl.dispose();
     super.dispose();
-  }
-
-  String _formatTime(TimeOfDay t) {
-    return '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
   }
 
   Future<void> _pickTime({
@@ -124,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // ── PRISTUPNI PODACI ────────────────────────
+          // â”€â”€ PRISTUPNI PODACI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           _sectionHeader(AppStrings.accessData),
           const SizedBox(height: 12),
           _buildField(
@@ -140,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 32),
 
-          // ── OSOBNI PODACI ───────────────────────────
+          // â”€â”€ OSOBNI PODACI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           _sectionHeader(AppStrings.studentData),
           const SizedBox(height: 12),
           _buildField(AppStrings.firstName, _firstNameCtrl),
@@ -168,7 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildField(AppStrings.studentIdCard, _studentIdCardCtrl),
           const SizedBox(height: 32),
 
-          // ── DOSTUPNOST ──────────────────────────────
+          // â”€â”€ DOSTUPNOST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           _sectionHeader(AppStrings.availabilitySection),
           const SizedBox(height: 4),
           Text(
@@ -176,10 +154,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: theme.textTheme.bodySmall,
           ),
           const SizedBox(height: 12),
-          ..._availability.map((day) => _buildDayRow(day)),
+          ..._availability.map(
+            (day) => AvailabilityDayRow(
+              day: day,
+              enabled: _isEditing,
+              onEnabledChanged: (v) {
+                setState(() => day.enabled = v);
+                widget.availabilityNotifier.notify();
+              },
+              onPickFrom: () => _pickTime(day: day, isFrom: true),
+              onPickTo: () => _pickTime(day: day, isFrom: false),
+            ),
+          ),
           const SizedBox(height: 8),
 
-          // ── UVJETI ──────────────────────────────────
+          // â”€â”€ UVJETI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -193,7 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    // TODO: otvori uvjete korištenja
+                    // TODO: otvori uvjete koriÅ¡tenja
                   },
                   child: RichText(
                     text: TextSpan(
@@ -217,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 16),
 
-          // ── UREDI / SPREMI ──────────────────────────
+          // â”€â”€ UREDI / SPREMI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           SizedBox(
             width: double.infinity,
             child: _isEditing
@@ -242,7 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 32),
 
-          // ── JEZIK ───────────────────────────────────
+          // â”€â”€ JEZIK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           InputDecorator(
             decoration: InputDecoration(
               labelText: AppStrings.language,
@@ -274,36 +263,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: theme.colorScheme.onSurface,
                   fontSize: 16,
                 ),
-                items: const [
-                  DropdownMenuItem(value: 'HR', child: Text('Hrvatski')),
-                  DropdownMenuItem(value: 'EN', child: Text('English')),
+                items: [
+                  DropdownMenuItem(
+                    value: 'HR',
+                    child: Text(AppStrings.langHrvatski),
+                  ),
+                  DropdownMenuItem(
+                    value: 'EN',
+                    child: Text(AppStrings.langEnglish),
+                  ),
                 ],
               ),
             ),
           ),
           const SizedBox(height: 24),
 
-          // ── ODJAVA ──────────────────────────────────
+          // â”€â”€ ODJAVA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           OutlinedButton.icon(
             onPressed: widget.onLogout,
             icon: const Icon(Icons.logout),
             label: Text(AppStrings.logout),
             style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFFEF5B5B),
-              side: const BorderSide(color: Color(0xFFEF5B5B), width: 2),
+              foregroundColor: HelpiTheme.coral,
+              side: const BorderSide(color: HelpiTheme.coral, width: 2),
             ),
           ),
           const SizedBox(height: 32),
 
-          // ── Verzija ─────────────────────────────────
-          Center(child: Text('Helpi v1.0.0', style: theme.textTheme.bodySmall)),
+          // â”€â”€ Verzija â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+          Center(
+            child: Text(
+              AppStrings.appVersion,
+              style: theme.textTheme.bodySmall,
+            ),
+          ),
           const SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  // ── Helpers ───────────────────────────────────────
+  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Widget _sectionHeader(String title) {
     final theme = Theme.of(context);
@@ -341,109 +341,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+          borderSide: const BorderSide(color: HelpiTheme.border),
         ),
         filled: true,
         fillColor: Colors.white,
-      ),
-    );
-  }
-
-  Widget _buildDayRow(DayAvailability day) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFE0E0E0)),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          children: [
-            // Checkbox za dan
-            SizedBox(
-              width: 32,
-              child: Checkbox(
-                value: day.enabled,
-                onChanged: _isEditing
-                    ? (v) {
-                        setState(() => day.enabled = v ?? false);
-                        widget.availabilityNotifier.notify();
-                      }
-                    : null,
-                activeColor: theme.colorScheme.secondary,
-              ),
-            ),
-            // Naziv dana
-            SizedBox(
-              width: 100,
-              child: Text(
-                _dayName(day.dayKey),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: day.enabled ? FontWeight.w600 : FontWeight.w400,
-                  color: day.enabled
-                      ? theme.colorScheme.onSurface
-                      : theme.colorScheme.onSurface.withAlpha(120),
-                ),
-              ),
-            ),
-            const Spacer(),
-            // Od - Do
-            if (day.enabled) ...[
-              _timeChip(
-                label: AppStrings.fromTime,
-                time: day.from,
-                onTap: _isEditing
-                    ? () => _pickTime(day: day, isFrom: true)
-                    : null,
-              ),
-              const SizedBox(width: 8),
-              _timeChip(
-                label: AppStrings.toTime,
-                time: day.to,
-                onTap: _isEditing
-                    ? () => _pickTime(day: day, isFrom: false)
-                    : null,
-              ),
-            ] else
-              Text(
-                AppStrings.notSet,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withAlpha(100),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _timeChip({
-    required String label,
-    required TimeOfDay time,
-    VoidCallback? onTap,
-  }) {
-    final theme = Theme.of(context);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.secondaryContainer,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          '$label ${_formatTime(time)}',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: theme.colorScheme.secondary,
-          ),
-        ),
       ),
     );
   }
@@ -460,7 +361,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+          borderSide: const BorderSide(color: HelpiTheme.border),
         ),
         enabled: _isEditing,
         filled: true,
@@ -497,8 +398,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ValueChanged<DateTime> onChanged,
   ) {
     final theme = Theme.of(context);
-    final formatted =
-        '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}.';
+    final formatted = Formatters.formatDateFull(date);
 
     return GestureDetector(
       onTap: _isEditing
@@ -528,7 +428,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             borderSide: BorderSide(
               color: _isEditing
                   ? theme.colorScheme.onSurface.withAlpha(100)
-                  : const Color(0xFFE0E0E0),
+                  : HelpiTheme.border,
             ),
           ),
           filled: true,
