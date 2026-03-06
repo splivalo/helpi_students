@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:helpi_student/core/models/review_model.dart';
 
 /// Tip usluge koju student obavlja.
-enum ServiceType { shopping, houseHelp, socializing, walking, escort, other }
+enum ServiceType { shopping, houseHelp, companionship, walking, escort, other }
 
 /// Status dodijeljenog posla.
-enum JobStatus { assigned, completed, cancelled }
+/// `scheduled` = planirano, još nije izvršeno/otkazano (canonical: replaces 'assigned').
+enum JobStatus { scheduled, completed, cancelled }
 
 /// Model jednog dodijeljenog posla za studenta.
 class Job {
@@ -18,7 +19,11 @@ class Job {
     required this.serviceTypes,
     required this.seniorName,
     required this.address,
-    this.status = JobStatus.assigned,
+    this.orderId,
+    this.sessionId,
+    this.studentId,
+    this.seniorId,
+    this.status = JobStatus.scheduled,
     this.notes,
     this.review,
   });
@@ -30,13 +35,20 @@ class Job {
   final List<ServiceType> serviceTypes;
   final String seniorName;
   final String address;
+
+  /// Linkage IDs prema canonical domain modelu.
+  final String? orderId;
+  final String? sessionId;
+  final String? studentId;
+  final String? seniorId;
+
   final JobStatus status;
   final String? notes;
   final ReviewModel? review;
 
-  /// Može li student otkazati ovaj posao (>24h do početka i status assigned)?
+  /// Može li student otkazati ovaj posao (>24h do početka i status scheduled)?
   bool get canDecline {
-    if (status != JobStatus.assigned) return false;
+    if (status != JobStatus.scheduled) return false;
     final jobStart = DateTime(
       date.year,
       date.month,
@@ -61,7 +73,11 @@ class MockJobs {
     return [
       // Danas — 4 posla (sva 3 statusa za pregled)
       Job(
-        id: '1',
+        id: 'ses_mock01',
+        orderId: 'ord_mock01',
+        sessionId: 'ses_mock01',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock01',
         date: today,
         from: const TimeOfDay(hour: 9, minute: 0),
         to: const TimeOfDay(hour: 11, minute: 0),
@@ -73,12 +89,16 @@ class MockJobs {
             'Kupiti lijekove u ljekarni Zdravlje na uglu, zatim namirnice po popisu koji je na hladnjaku - mlijeko, kruh, jaja, maslac, sir, jogurt i voće.',
       ),
       Job(
-        id: '2',
+        id: 'ses_mock02',
+        orderId: 'ord_mock02',
+        sessionId: 'ses_mock02',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock02',
         date: today,
         from: const TimeOfDay(hour: 12, minute: 0),
         to: const TimeOfDay(hour: 13, minute: 30),
         serviceTypes: [
-          ServiceType.socializing,
+          ServiceType.companionship,
           ServiceType.shopping,
           ServiceType.walking,
           ServiceType.houseHelp,
@@ -87,10 +107,14 @@ class MockJobs {
         ],
         seniorName: 'Ivan Kovačević',
         address: 'Vukovarska 78, Zagreb',
-        status: JobStatus.assigned,
+        status: JobStatus.scheduled,
       ),
       Job(
-        id: '2b',
+        id: 'ses_mock02b',
+        orderId: 'ord_mock03',
+        sessionId: 'ses_mock02b',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock03',
         date: today,
         from: const TimeOfDay(hour: 14, minute: 0),
         to: const TimeOfDay(hour: 15, minute: 0),
@@ -101,93 +125,125 @@ class MockJobs {
         notes: 'Otkazano zbog bolesti.',
       ),
       Job(
-        id: '2c',
+        id: 'ses_mock02c',
+        orderId: 'ord_mock04',
+        sessionId: 'ses_mock02c',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock04',
         date: today,
         from: const TimeOfDay(hour: 16, minute: 0),
         to: const TimeOfDay(hour: 18, minute: 0),
         serviceTypes: [ServiceType.walking],
         seniorName: 'Dragica Perić',
         address: 'Trg bana Jelačića 5, Zagreb',
-        status: JobStatus.assigned,
+        status: JobStatus.scheduled,
       ),
       Job(
-        id: '2d',
+        id: 'ses_mock02d',
+        orderId: 'ord_mock05',
+        sessionId: 'ses_mock02d',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock05',
         date: today,
         from: const TimeOfDay(hour: 18, minute: 30),
         to: const TimeOfDay(hour: 20, minute: 0),
         serviceTypes: [ServiceType.houseHelp],
         seniorName: 'Božena Šimunić',
         address: 'Ozaljska 22, Zagreb',
-        status: JobStatus.assigned,
+        status: JobStatus.scheduled,
         notes:
             'Usisati stan, oprati suđe i obrisati prašinu u dnevnom boravku.',
       ),
       Job(
-        id: '2e',
+        id: 'ses_mock02e',
+        orderId: 'ord_mock06',
+        sessionId: 'ses_mock02e',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock06',
         date: today,
         from: const TimeOfDay(hour: 20, minute: 30),
         to: const TimeOfDay(hour: 21, minute: 30),
         serviceTypes: [ServiceType.other],
         seniorName: 'Franjo Kolar',
         address: 'Dubrava 150, Zagreb',
-        status: JobStatus.assigned,
+        status: JobStatus.scheduled,
         notes: 'Pomoć s instalacijom TV aplikacija i podešavanjem mobitela.',
       ),
 
       // Sutra — 1 posao
       Job(
-        id: '3',
+        id: 'ses_mock03',
+        orderId: 'ord_mock07',
+        sessionId: 'ses_mock03',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock07',
         date: today.add(const Duration(days: 1)),
         from: const TimeOfDay(hour: 10, minute: 0),
         to: const TimeOfDay(hour: 12, minute: 0),
         serviceTypes: [ServiceType.escort],
         seniorName: 'Ana Babić',
         address: 'Heinzelova 15, Zagreb',
-        status: JobStatus.assigned,
+        status: JobStatus.scheduled,
         notes: 'Pratnja do liječnika i natrag.',
       ),
 
       // Prekosutra — 1 posao
       Job(
-        id: '4',
+        id: 'ses_mock04',
+        orderId: 'ord_mock08',
+        sessionId: 'ses_mock04',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock08',
         date: today.add(const Duration(days: 2)),
         from: const TimeOfDay(hour: 8, minute: 0),
         to: const TimeOfDay(hour: 10, minute: 0),
         serviceTypes: [ServiceType.houseHelp],
         seniorName: 'Josip Matić',
         address: 'Savska 101, Zagreb',
-        status: JobStatus.assigned,
+        status: JobStatus.scheduled,
       ),
 
       // Za 4 dana — 1 posao
       Job(
-        id: '5',
+        id: 'ses_mock05',
+        orderId: 'ord_mock09',
+        sessionId: 'ses_mock05',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock09',
         date: today.add(const Duration(days: 4)),
         from: const TimeOfDay(hour: 15, minute: 0),
         to: const TimeOfDay(hour: 17, minute: 0),
         serviceTypes: [ServiceType.walking],
         seniorName: 'Kata Jurić',
         address: 'Maksimirska 33, Zagreb',
-        status: JobStatus.assigned,
+        status: JobStatus.scheduled,
         notes: 'Šetnja do parka i natrag, polako.',
       ),
 
       // Za 5 dana — 1 posao
       Job(
-        id: '6',
+        id: 'ses_mock06',
+        orderId: 'ord_mock10',
+        sessionId: 'ses_mock06',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock10',
         date: today.add(const Duration(days: 5)),
         from: const TimeOfDay(hour: 11, minute: 0),
         to: const TimeOfDay(hour: 13, minute: 0),
         serviceTypes: [ServiceType.other],
         seniorName: 'Mirko Tomić',
         address: 'Držićeva 12, Zagreb',
-        status: JobStatus.assigned,
+        status: JobStatus.scheduled,
         notes: 'Pomoć s preslagivanjem stvari u ormaru.',
       ),
 
       // ── Prošli poslovi (završeni, za statistiku) ──
       Job(
-        id: '7',
+        id: 'ses_mock07',
+        orderId: 'ord_mock11',
+        sessionId: 'ses_mock07',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock11',
         date: today.subtract(const Duration(days: 2)),
         from: const TimeOfDay(hour: 9, minute: 0),
         to: const TimeOfDay(hour: 11, minute: 0),
@@ -202,11 +258,15 @@ class MockJobs {
         ),
       ),
       Job(
-        id: '8',
+        id: 'ses_mock08',
+        orderId: 'ord_mock12',
+        sessionId: 'ses_mock08',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock12',
         date: today.subtract(const Duration(days: 3)),
         from: const TimeOfDay(hour: 14, minute: 0),
         to: const TimeOfDay(hour: 16, minute: 30),
-        serviceTypes: [ServiceType.walking, ServiceType.socializing],
+        serviceTypes: [ServiceType.walking, ServiceType.companionship],
         seniorName: 'Slavko Barić',
         address: 'Šubićeva 10, Zagreb',
         status: JobStatus.completed,
@@ -217,7 +277,11 @@ class MockJobs {
         ),
       ),
       Job(
-        id: '9',
+        id: 'ses_mock09',
+        orderId: 'ord_mock13',
+        sessionId: 'ses_mock09',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock13',
         date: today.subtract(const Duration(days: 5)),
         from: const TimeOfDay(hour: 10, minute: 0),
         to: const TimeOfDay(hour: 12, minute: 0),
@@ -232,7 +296,11 @@ class MockJobs {
         ),
       ),
       Job(
-        id: '10',
+        id: 'ses_mock10',
+        orderId: 'ord_mock01',
+        sessionId: 'ses_mock10',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock01',
         date: today.subtract(const Duration(days: 7)),
         from: const TimeOfDay(hour: 8, minute: 0),
         to: const TimeOfDay(hour: 10, minute: 0),
@@ -247,11 +315,15 @@ class MockJobs {
         ),
       ),
       Job(
-        id: '11',
+        id: 'ses_mock11',
+        orderId: 'ord_mock14',
+        sessionId: 'ses_mock11',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock14',
         date: today.subtract(const Duration(days: 10)),
         from: const TimeOfDay(hour: 15, minute: 0),
         to: const TimeOfDay(hour: 17, minute: 0),
-        serviceTypes: [ServiceType.socializing],
+        serviceTypes: [ServiceType.companionship],
         seniorName: 'Anka Vuković',
         address: 'Palmotićeva 18, Zagreb',
         status: JobStatus.completed,
@@ -262,7 +334,11 @@ class MockJobs {
         ),
       ),
       Job(
-        id: '12',
+        id: 'ses_mock12',
+        orderId: 'ord_mock08',
+        sessionId: 'ses_mock12',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock08',
         date: today.subtract(const Duration(days: 14)),
         from: const TimeOfDay(hour: 9, minute: 0),
         to: const TimeOfDay(hour: 11, minute: 30),
@@ -274,7 +350,11 @@ class MockJobs {
 
       // ── Prošli tjedan (prije 8-13 dana) — za tjedni chart ──
       Job(
-        id: '13',
+        id: 'ses_mock13',
+        orderId: 'ord_mock09',
+        sessionId: 'ses_mock13',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock09',
         date: today.subtract(const Duration(days: 8)),
         from: const TimeOfDay(hour: 10, minute: 0),
         to: const TimeOfDay(hour: 12, minute: 0),
@@ -284,17 +364,25 @@ class MockJobs {
         status: JobStatus.completed,
       ),
       Job(
-        id: '14',
+        id: 'ses_mock14',
+        orderId: 'ord_mock14',
+        sessionId: 'ses_mock14',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock14',
         date: today.subtract(const Duration(days: 9)),
         from: const TimeOfDay(hour: 14, minute: 0),
         to: const TimeOfDay(hour: 16, minute: 0),
-        serviceTypes: [ServiceType.socializing],
+        serviceTypes: [ServiceType.companionship],
         seniorName: 'Anka Vuković',
         address: 'Palmotićeva 18, Zagreb',
         status: JobStatus.completed,
       ),
       Job(
-        id: '15',
+        id: 'ses_mock15',
+        orderId: 'ord_mock13',
+        sessionId: 'ses_mock15',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock13',
         date: today.subtract(const Duration(days: 11)),
         from: const TimeOfDay(hour: 8, minute: 0),
         to: const TimeOfDay(hour: 11, minute: 0),
@@ -306,7 +394,11 @@ class MockJobs {
 
       // ── Prije 3 tjedna ──
       Job(
-        id: '16',
+        id: 'ses_mock16',
+        orderId: 'ord_mock11',
+        sessionId: 'ses_mock16',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock11',
         date: today.subtract(const Duration(days: 17)),
         from: const TimeOfDay(hour: 9, minute: 0),
         to: const TimeOfDay(hour: 12, minute: 0),
@@ -316,7 +408,11 @@ class MockJobs {
         status: JobStatus.completed,
       ),
       Job(
-        id: '17',
+        id: 'ses_mock17',
+        orderId: 'ord_mock07',
+        sessionId: 'ses_mock17',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock07',
         date: today.subtract(const Duration(days: 19)),
         from: const TimeOfDay(hour: 13, minute: 0),
         to: const TimeOfDay(hour: 15, minute: 0),
@@ -328,7 +424,11 @@ class MockJobs {
 
       // ── Prije 4 tjedna ──
       Job(
-        id: '18',
+        id: 'ses_mock18',
+        orderId: 'ord_mock01',
+        sessionId: 'ses_mock18',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock01',
         date: today.subtract(const Duration(days: 25)),
         from: const TimeOfDay(hour: 10, minute: 0),
         to: const TimeOfDay(hour: 13, minute: 0),
@@ -340,7 +440,11 @@ class MockJobs {
 
       // ── Prošli mjesec ──
       Job(
-        id: '19',
+        id: 'ses_mock19',
+        orderId: 'ord_mock04',
+        sessionId: 'ses_mock19',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock04',
         date: today.subtract(const Duration(days: 35)),
         from: const TimeOfDay(hour: 9, minute: 0),
         to: const TimeOfDay(hour: 11, minute: 0),
@@ -350,17 +454,25 @@ class MockJobs {
         status: JobStatus.completed,
       ),
       Job(
-        id: '20',
+        id: 'ses_mock20',
+        orderId: 'ord_mock12',
+        sessionId: 'ses_mock20',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock12',
         date: today.subtract(const Duration(days: 40)),
         from: const TimeOfDay(hour: 14, minute: 0),
         to: const TimeOfDay(hour: 17, minute: 0),
-        serviceTypes: [ServiceType.socializing],
+        serviceTypes: [ServiceType.companionship],
         seniorName: 'Slavko Barić',
         address: 'Šubićeva 10, Zagreb',
         status: JobStatus.completed,
       ),
       Job(
-        id: '21',
+        id: 'ses_mock21',
+        orderId: 'ord_mock03',
+        sessionId: 'ses_mock21',
+        studentId: 'stu_mock01',
+        seniorId: 'sen_mock03',
         date: today.subtract(const Duration(days: 45)),
         from: const TimeOfDay(hour: 8, minute: 0),
         to: const TimeOfDay(hour: 10, minute: 30),

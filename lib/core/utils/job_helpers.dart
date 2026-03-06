@@ -11,8 +11,8 @@ class JobHelpers {
 
   static String statusLabel(JobStatus status) {
     switch (status) {
-      case JobStatus.assigned:
-        return AppStrings.jobStatusAssigned;
+      case JobStatus.scheduled:
+        return AppStrings.jobStatusScheduled;
       case JobStatus.completed:
         return AppStrings.jobStatusCompleted;
       case JobStatus.cancelled:
@@ -22,7 +22,7 @@ class JobHelpers {
 
   static Color statusColor(JobStatus status) {
     switch (status) {
-      case JobStatus.assigned:
+      case JobStatus.scheduled:
         return const Color(0xFF4CAF50);
       case JobStatus.completed:
         return const Color(0xFF757575);
@@ -33,7 +33,7 @@ class JobHelpers {
 
   static Color statusBgColor(JobStatus status) {
     switch (status) {
-      case JobStatus.assigned:
+      case JobStatus.scheduled:
         return const Color(0xFFE8F5E9);
       case JobStatus.completed:
         return const Color(0xFFF0F0F0);
@@ -50,8 +50,8 @@ class JobHelpers {
         return AppStrings.serviceShopping2;
       case ServiceType.houseHelp:
         return AppStrings.serviceHouseHelp2;
-      case ServiceType.socializing:
-        return AppStrings.serviceSocializing2;
+      case ServiceType.companionship:
+        return AppStrings.serviceCompanionship2;
       case ServiceType.walking:
         return AppStrings.serviceWalking2;
       case ServiceType.escort:

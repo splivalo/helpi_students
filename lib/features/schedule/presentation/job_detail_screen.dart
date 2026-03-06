@@ -562,6 +562,10 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
     if (confirmed == true) {
       final updatedJob = Job(
         id: _job.id,
+        orderId: _job.orderId,
+        sessionId: _job.sessionId,
+        studentId: _job.studentId,
+        seniorId: _job.seniorId,
         date: _job.date,
         from: _job.from,
         to: _job.to,

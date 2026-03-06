@@ -275,7 +275,7 @@ class AppStrings {
       'jobTime': 'Vrijeme',
       'jobService': 'Usluga',
       'jobNotes': 'Napomene',
-      'jobStatusAssigned': 'Dodijeljeno',
+      'jobStatusScheduled': 'Dodijeljeno',
       'jobStatusCompleted': 'Završeno',
       'jobStatusCancelled': 'Otkazano',
       'jobDecline': 'Ne mogu',
@@ -289,7 +289,7 @@ class AppStrings {
       'reviewSent': 'Ocjena je poslana.',
       'serviceShopping2': 'Kupovina',
       'serviceHouseHelp2': 'Pomoć u kući',
-      'serviceSocializing2': 'Društvo',
+      'serviceCompanionship2': 'Društvo',
       'serviceWalking2': 'Šetnja',
       'serviceEscort2': 'Pratnja',
       'serviceOther2': 'Ostalo',
@@ -647,7 +647,7 @@ class AppStrings {
       'jobTime': 'Time',
       'jobService': 'Service',
       'jobNotes': 'Notes',
-      'jobStatusAssigned': 'Assigned',
+      'jobStatusScheduled': 'Scheduled',
       'jobStatusCompleted': 'Completed',
       'jobStatusCancelled': 'Cancelled',
       'jobDecline': 'Can\'t do it',
@@ -661,7 +661,7 @@ class AppStrings {
       'reviewSent': 'Review sent.',
       'serviceShopping2': 'Shopping',
       'serviceHouseHelp2': 'House help',
-      'serviceSocializing2': 'Socializing',
+      'serviceCompanionship2': 'Companionship',
       'serviceWalking2': 'Walking',
       'serviceEscort2': 'Escort',
       'serviceOther2': 'Other',
@@ -1039,7 +1039,7 @@ class AppStrings {
   static String get jobTime => _t('jobTime');
   static String get jobService => _t('jobService');
   static String get jobNotes => _t('jobNotes');
-  static String get jobStatusAssigned => _t('jobStatusAssigned');
+  static String get jobStatusScheduled => _t('jobStatusScheduled');
   static String get jobStatusCompleted => _t('jobStatusCompleted');
   static String get jobStatusCancelled => _t('jobStatusCancelled');
   static String get jobDecline => _t('jobDecline');
@@ -1053,7 +1053,7 @@ class AppStrings {
   static String get reviewSent => _t('reviewSent');
   static String get serviceShopping2 => _t('serviceShopping2');
   static String get serviceHouseHelp2 => _t('serviceHouseHelp2');
-  static String get serviceSocializing2 => _t('serviceSocializing2');
+  static String get serviceCompanionship2 => _t('serviceCompanionship2');
   static String get serviceWalking2 => _t('serviceWalking2');
   static String get serviceEscort2 => _t('serviceEscort2');
   static String get serviceOther2 => _t('serviceOther2');

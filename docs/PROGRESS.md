@@ -1,6 +1,6 @@
 # Helpi Student — Progress
 
-> Last updated: June 2025.
+> Last updated: March 2026.
 
 ## Module Completion
 
@@ -18,6 +18,7 @@
 | Poruke (Chat / Messages)                         | ⬜ Placeholder                 | 0%   |
 | Documentation                                    | ✅ Done                        | 100% |
 | **DRY Refactor (Phases 1-6)**                    | ✅ Done                        | 100% |
+| **Canonical Domain Alignment**                   | ✅ Done                        | 100% |
 
 ## Checklist — Completed
 
@@ -39,11 +40,11 @@
 - [x] Documentation — docs/ folder with ARCHITECTURE, APP_FLOW, BUSINESS_LOGIC
 - [x] dart analyze: 0 errors maintained throughout
 - [x] Schedule screen — weekly strip + daily job list, simplified job cards
-- [x] Job model — mock data with 21 jobs, ServiceType enum, JobStatus enum (assigned/completed/cancelled), canDecline rule
+- [x] Job model — mock data with 21 jobs, ServiceType enum, JobStatus enum (scheduled/completed/cancelled), canDecline rule
 - [x] Multi-service support — Job.serviceTypes is List<ServiceType>, chips display
 - [x] Job detail screen — full detail view with service chips, status badge, decline dialog
 - [x] Review system — seniors rate students, ReviewModel, star display + comment
-- [x] Status refactor — JobStatus: assigned, completed, cancelled (removed pending/inProgress/declined)
+- [x] Status refactor — JobStatus: scheduled, completed, cancelled (canonical domain alignment)
 - [x] Card simplification — time+status, korisnik, adresa, "Prikaži više >"
 - [x] Icon updates — elderly_woman (walking), assist_walker (escort), place (location)
 - [x] Statistics screen — weekly + monthly bar charts, comparison %, total hours, avg rating
@@ -55,6 +56,8 @@
 - [x] **DRY Refactor Phase 4** — i18n keys: `langHrvatski`, `langEnglish`, `appVersion`, `statsDayMon`-`statsDaySun` + `statsDayLabels` list
 - [x] **DRY Refactor Phase 5-6** — All screens updated: replaced duplicated functions, hardcoded colors, hardcoded strings; fixed `mounted` → `context.mounted`; removed dead code
 - [x] flutter analyze: 0 issues maintained (0 errors baseline → 0 issues after refactor)
+- [x] **Canonical Domain V1** — JobStatus.assigned→scheduled, ServiceType.socializing→companionship, Job model: added orderId/sessionId/studentId/seniorId linkage IDs, MockJobs populated with ses*/ord*/stu*/sen* mock IDs, AppStrings keys renamed (jobStatusScheduled, serviceCompanionship2)
+- [x] flutter analyze: 0 issues maintained after canonical alignment
 
 ## Next Steps (awaiting user confirmation)
 
