@@ -320,7 +320,10 @@ class AppStrings {
       'notSet': 'Nije postavljeno',
       'studentData': 'Osobni podaci',
       'faculty': 'Fakultet',
-      'facultyHint': 'Npr. Ekonomski fakultet Zagreb',
+      'facultyHint': 'Odaberite fakultet',
+      'facultyPickerTitle': 'Odaberite fakultet',
+      'facultySearchHint': 'Pretraži po akronimu ili nazivu',
+      'facultyNoResults': 'Nema rezultata',
       'studentIdCard': 'Broj studentske iskaznice',
       'studentIdCardHint': 'Npr. 0036512345',
       'registrationDataTitle': 'Vaši podaci',
@@ -694,7 +697,10 @@ class AppStrings {
       'notSet': 'Not set',
       'studentData': 'Personal info',
       'faculty': 'Faculty',
-      'facultyHint': 'E.g. Faculty of Economics Zagreb',
+      'facultyHint': 'Select faculty',
+      'facultyPickerTitle': 'Select faculty',
+      'facultySearchHint': 'Search by acronym or name',
+      'facultyNoResults': 'No results',
       'studentIdCard': 'Student ID card number',
       'studentIdCardHint': 'E.g. 0036512345',
       'registrationDataTitle': 'Your details',
@@ -1088,6 +1094,9 @@ class AppStrings {
   static String get studentData => _t('studentData');
   static String get faculty => _t('faculty');
   static String get facultyHint => _t('facultyHint');
+  static String get facultyPickerTitle => _t('facultyPickerTitle');
+  static String get facultySearchHint => _t('facultySearchHint');
+  static String get facultyNoResults => _t('facultyNoResults');
   static String get studentIdCard => _t('studentIdCard');
   static String get studentIdCardHint => _t('studentIdCardHint');
   static String get registrationDataTitle => _t('registrationDataTitle');

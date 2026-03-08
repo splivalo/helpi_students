@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
+import 'package:helpi_student/core/models/faculty.dart';
 import 'package:helpi_student/core/utils/formatters.dart';
+import 'package:helpi_student/core/widgets/faculty_picker.dart';
 
 /// Registracija — student upisuje osobne podatke prije postavljanja dostupnosti.
 /// Gumb "Dalje" je disabled dok sva obavezna polja nisu popunjena.
@@ -20,11 +22,11 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
   final _lastNameCtrl = TextEditingController();
   final _phoneCtrl = TextEditingController();
   final _addressCtrl = TextEditingController();
-  final _facultyCtrl = TextEditingController();
   final _studentIdCardCtrl = TextEditingController();
 
   String _gender = 'M';
   DateTime? _dob;
+  Faculty? _selectedFaculty;
 
   @override
   void initState() {
@@ -33,7 +35,6 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
     _lastNameCtrl.addListener(_onFieldChanged);
     _phoneCtrl.addListener(_onFieldChanged);
     _addressCtrl.addListener(_onFieldChanged);
-    _facultyCtrl.addListener(_onFieldChanged);
     _studentIdCardCtrl.addListener(_onFieldChanged);
   }
 
@@ -45,7 +46,6 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
     _lastNameCtrl.dispose();
     _phoneCtrl.dispose();
     _addressCtrl.dispose();
-    _facultyCtrl.dispose();
     _studentIdCardCtrl.dispose();
     super.dispose();
   }
@@ -55,7 +55,7 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
       _lastNameCtrl.text.trim().isNotEmpty &&
       _phoneCtrl.text.trim().isNotEmpty &&
       _addressCtrl.text.trim().isNotEmpty &&
-      _facultyCtrl.text.trim().isNotEmpty &&
+      _selectedFaculty != null &&
       _studentIdCardCtrl.text.trim().isNotEmpty &&
       _dob != null;
 
@@ -133,12 +133,7 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
                     const SizedBox(height: 12),
 
                     // ── Fakultet ──
-                    _buildField(
-                      label: AppStrings.faculty,
-                      controller: _facultyCtrl,
-                      theme: theme,
-                      hint: AppStrings.facultyHint,
-                    ),
+                    _buildFacultyPicker(theme),
                     const SizedBox(height: 12),
 
                     // ── Broj studentske iskaznice ──
@@ -282,6 +277,49 @@ class _RegistrationDataScreenState extends State<RegistrationDataScreen> {
             fontSize: 16,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFacultyPicker(ThemeData theme) {
+    final hasFaculty = _selectedFaculty != null;
+
+    return GestureDetector(
+      onTap: () async {
+        final picked = await showFacultyPicker(
+          context: context,
+          current: _selectedFaculty,
+        );
+        if (picked != null && context.mounted) {
+          setState(() => _selectedFaculty = picked);
+        }
+      },
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: AppStrings.faculty,
+          labelStyle: TextStyle(
+            color: theme.colorScheme.onSurface.withAlpha(180),
+          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+          filled: true,
+          fillColor: Colors.white,
+          suffixIcon: Icon(
+            Icons.arrow_drop_down,
+            color: theme.colorScheme.secondary,
+          ),
+        ),
+        child: hasFaculty
+            ? Text(
+                _selectedFaculty!.acronym,
+                style: TextStyle(
+                  color: theme.colorScheme.onSurface,
+                  fontSize: 16,
+                ),
+              )
+            : Text(
+                AppStrings.facultyHint,
+                style: TextStyle(color: HelpiTheme.textSecondary, fontSize: 16),
+              ),
       ),
     );
   }

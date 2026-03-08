@@ -4,8 +4,10 @@ import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/l10n/locale_notifier.dart';
 import 'package:helpi_student/core/models/availability_model.dart';
+import 'package:helpi_student/core/models/faculty.dart';
 import 'package:helpi_student/core/utils/formatters.dart';
 import 'package:helpi_student/core/widgets/availability_day_row.dart';
+import 'package:helpi_student/core/widgets/faculty_picker.dart';
 import 'package:helpi_student/core/widgets/time_slot_picker.dart';
 
 /// Profil ekran â€” pristupni podaci, dostupnost, jezik, uvjeti, odjava.
@@ -34,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _lastNameCtrl = TextEditingController(text: 'Horvat');
   final _phoneCtrl = TextEditingController(text: '+385 91 555 1234');
   final _addressCtrl = TextEditingController(text: 'Savska 25, Zagreb');
-  final _facultyCtrl = TextEditingController(text: 'Ekonomski fakultet Zagreb');
+  Faculty? _selectedFaculty = Faculty.byAcronym('EFZG');
   final _studentIdCardCtrl = TextEditingController(text: '0036512345');
   String _gender = 'F';
   DateTime _dob = DateTime(2002, 5, 10);
@@ -54,7 +56,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _lastNameCtrl.dispose();
     _phoneCtrl.dispose();
     _addressCtrl.dispose();
-    _facultyCtrl.dispose();
     _studentIdCardCtrl.dispose();
     super.dispose();
   }
@@ -141,7 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 12),
           _buildField(AppStrings.address, _addressCtrl),
           const SizedBox(height: 12),
-          _buildField(AppStrings.faculty, _facultyCtrl),
+          _buildFacultyField(),
           const SizedBox(height: 12),
           _buildField(AppStrings.studentIdCard, _studentIdCardCtrl),
           const SizedBox(height: 32),
@@ -450,6 +451,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontSize: 16,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFacultyField() {
+    final theme = Theme.of(context);
+    final hasFaculty = _selectedFaculty != null;
+
+    return GestureDetector(
+      onTap: _isEditing
+          ? () async {
+              final picked = await showFacultyPicker(
+                context: context,
+                current: _selectedFaculty,
+              );
+              if (picked != null && context.mounted) {
+                setState(() => _selectedFaculty = picked);
+              }
+            }
+          : null,
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: AppStrings.faculty,
+          labelStyle: TextStyle(
+            color: theme.colorScheme.onSurface.withAlpha(
+              _isEditing ? 180 : 153,
+            ),
+          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: HelpiTheme.border),
+          ),
+          enabled: _isEditing,
+          filled: true,
+          fillColor: Colors.white,
+          suffixIcon: _isEditing
+              ? Icon(Icons.arrow_drop_down, color: theme.colorScheme.secondary)
+              : null,
+        ),
+        child: hasFaculty
+            ? Text(
+                _selectedFaculty!.acronym,
+                style: TextStyle(
+                  color: _isEditing
+                      ? theme.colorScheme.onSurface
+                      : theme.colorScheme.onSurface.withAlpha(153),
+                  fontSize: 16,
+                ),
+              )
+            : Text(
+                AppStrings.facultyHint,
+                style: TextStyle(color: HelpiTheme.textSecondary, fontSize: 16),
+              ),
       ),
     );
   }
