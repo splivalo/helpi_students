@@ -7,6 +7,7 @@ import 'package:helpi_student/auth/presentation/login_screen.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/l10n/locale_notifier.dart';
 import 'package:helpi_student/core/models/availability_model.dart';
+import 'package:helpi_student/core/services/auth_service.dart';
 import 'package:helpi_student/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:helpi_student/features/onboarding/presentation/registration_data_screen.dart';
 
@@ -21,10 +22,31 @@ class HelpiStudentApp extends StatefulWidget {
 class _HelpiStudentAppState extends State<HelpiStudentApp> {
   final _localeNotifier = LocaleNotifier();
   final _availabilityNotifier = AvailabilityNotifier();
+  final _authService = AuthService();
 
   bool _isLoggedIn = false;
+  bool _isCheckingAuth = true;
   bool _hasCompletedRegistration = false;
   bool _hasCompletedOnboarding = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkExistingAuth();
+  }
+
+  Future<void> _checkExistingAuth() async {
+    final loggedIn = await _authService.isLoggedIn();
+    if (!mounted) return;
+    setState(() {
+      _isLoggedIn = loggedIn;
+      if (loggedIn) {
+        _hasCompletedRegistration = true;
+        _hasCompletedOnboarding = true;
+      }
+      _isCheckingAuth = false;
+    });
+  }
 
   /// Login — preskače registraciju i onboarding, ide direktno u app.
   void _handleLogin() {
@@ -43,11 +65,14 @@ class _HelpiStudentAppState extends State<HelpiStudentApp> {
   }
 
   void _handleLogout() {
-    setState(() {
-      _isLoggedIn = false;
-      _hasCompletedRegistration = false;
-      _hasCompletedOnboarding = false;
-      _availabilityNotifier.reset();
+    _authService.logout().then((_) {
+      if (!mounted) return;
+      setState(() {
+        _isLoggedIn = false;
+        _hasCompletedRegistration = false;
+        _hasCompletedOnboarding = false;
+        _availabilityNotifier.reset();
+      });
     });
   }
 
@@ -67,6 +92,11 @@ class _HelpiStudentAppState extends State<HelpiStudentApp> {
   }
 
   Widget _buildHome() {
+    if (_isCheckingAuth) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     if (!_isLoggedIn) {
       return LoginScreen(
         onLoginSuccess: _handleLogin,

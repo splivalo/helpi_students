@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/l10n/locale_notifier.dart';
+import 'package:helpi_student/core/services/auth_service.dart';
 
 /// Login / Register ekran — UI prototype, bez prave autentikacije.
 class LoginScreen extends StatefulWidget {
@@ -28,9 +30,12 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
+  final _authService = AuthService();
   late String _selectedLang = AppStrings.currentLocale.toUpperCase();
   bool _isRegisterMode = false;
   bool _obscurePassword = true;
+  bool _isLoading = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -96,52 +101,61 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 40),
 
                     // ── Email field ──
-                    TextField(
-                      controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: AppStrings.loginEmail,
-                        prefixIcon: const Icon(
-                          Icons.email_outlined,
-                          color: HelpiTheme.teal,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // ── Password field ──
-                    TextField(
-                      controller: _passwordCtrl,
-                      obscureText: _obscurePassword,
-                      decoration: InputDecoration(
-                        labelText: AppStrings.loginPassword,
-                        prefixIcon: const Icon(
-                          Icons.lock_outline,
-                          color: HelpiTheme.teal,
-                        ),
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            setState(
-                              () => _obscurePassword = !_obscurePassword,
-                            );
-                          },
-                          child: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                            color: HelpiTheme.textSecondary,
+                    AutofillGroup(
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: _emailCtrl,
+                            keyboardType: TextInputType.emailAddress,
+                            autofillHints: const [AutofillHints.email, AutofillHints.username],
+                            decoration: InputDecoration(
+                              labelText: AppStrings.loginEmail,
+                              prefixIcon: const Icon(
+                                Icons.email_outlined,
+                                color: HelpiTheme.teal,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
                           ),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
+                          const SizedBox(height: 16),
+
+                          // ── Password field ──
+                          TextField(
+                            controller: _passwordCtrl,
+                            obscureText: _obscurePassword,
+                            autofillHints: const [AutofillHints.password],
+                            onEditingComplete: TextInput.finishAutofillContext,
+                            decoration: InputDecoration(
+                              labelText: AppStrings.loginPassword,
+                              prefixIcon: const Icon(
+                                Icons.lock_outline,
+                                color: HelpiTheme.teal,
+                              ),
+                              suffixIcon: GestureDetector(
+                                onTap: () {
+                                  setState(
+                                    () => _obscurePassword = !_obscurePassword,
+                                  );
+                                },
+                                child: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                  color: HelpiTheme.textSecondary,
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -151,9 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {
-                            // Prototype — no action
-                          },
+                          onPressed: () => _showForgotPasswordDialog(context),
                           child: Text(
                             AppStrings.forgotPassword,
                             style: TextStyle(
@@ -165,14 +177,34 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     const SizedBox(height: 20),
 
+                    // ── Error message ──
+                    if (_errorMessage != null) ...[
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.red.shade200),
+                        ),
+                        child: Text(
+                          _errorMessage!,
+                          style: TextStyle(color: Colors.red.shade700, fontSize: 14),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+
                     // ── Main CTA button ──
                     SizedBox(
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: _isRegisterMode
-                            ? widget.onRegisterSuccess
-                            : widget.onLoginSuccess,
+                        onPressed: _isLoading
+                            ? null
+                            : (_isRegisterMode
+                                ? widget.onRegisterSuccess
+                                : _handleLogin),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: HelpiTheme.coral,
                           foregroundColor: Colors.white,
@@ -185,11 +217,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        child: Text(
-                          _isRegisterMode
-                              ? AppStrings.registrationDataNext
-                              : AppStrings.loginButton,
-                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                _isRegisterMode
+                                    ? AppStrings.registrationDataNext
+                                    : AppStrings.loginButton,
+                              ),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -264,6 +305,240 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ),
       ),
+    );
+  }
+
+  // ══════════════════════════════════════════════
+  // HELPERS
+  // ══════════════════════════════════════════════
+
+  Future<void> _handleLogin() async {
+    final email = _emailCtrl.text.trim();
+    final password = _passwordCtrl.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      setState(() => _errorMessage = AppStrings.loginError);
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final result = await _authService.login(email, password);
+
+    if (!mounted) return;
+
+    setState(() => _isLoading = false);
+
+    if (result.success) {
+      widget.onLoginSuccess();
+    } else {
+      setState(() => _errorMessage = result.message);
+    }
+  }
+
+  void _showForgotPasswordDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => const _ForgotPasswordDialog(),
+    );
+  }
+}
+
+// ══════════════════════════════════════════════
+// Forgot Password Dialog (2-step: email → code + new password)
+// ══════════════════════════════════════════════
+class _ForgotPasswordDialog extends StatefulWidget {
+  const _ForgotPasswordDialog();
+
+  @override
+  State<_ForgotPasswordDialog> createState() => _ForgotPasswordDialogState();
+}
+
+class _ForgotPasswordDialogState extends State<_ForgotPasswordDialog> {
+  final _authService = AuthService();
+  final _emailCtrl = TextEditingController();
+  final _codeCtrl = TextEditingController();
+  final _newPasswordCtrl = TextEditingController();
+  final _confirmPasswordCtrl = TextEditingController();
+
+  bool _codeSent = false;
+  bool _isLoading = false;
+  String? _message;
+  bool _isError = false;
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _codeCtrl.dispose();
+    _newPasswordCtrl.dispose();
+    _confirmPasswordCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _sendCode() async {
+    final email = _emailCtrl.text.trim();
+    if (email.isEmpty) return;
+
+    setState(() {
+      _isLoading = true;
+      _message = null;
+    });
+
+    final result = await _authService.forgotPassword(email);
+
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = false;
+      if (result.success) {
+        _codeSent = true;
+        _message = AppStrings.codeSent;
+        _isError = false;
+      } else {
+        _message = result.message;
+        _isError = true;
+      }
+    });
+  }
+
+  Future<void> _resetPassword() async {
+    final code = _codeCtrl.text.trim();
+    final newPassword = _newPasswordCtrl.text;
+    final confirmPassword = _confirmPasswordCtrl.text;
+
+    if (code.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) return;
+
+    if (newPassword != confirmPassword) {
+      setState(() {
+        _message = AppStrings.loginError;
+        _isError = true;
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _message = null;
+    });
+
+    final result = await _authService.resetPassword(
+      _emailCtrl.text.trim(),
+      code,
+      newPassword,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = false;
+      if (result.success) {
+        _message = AppStrings.resetPasswordSuccess;
+        _isError = false;
+      } else {
+        _message = result.message;
+        _isError = true;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(AppStrings.forgotPasswordTitle),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!_codeSent) ...[
+              Text(AppStrings.forgotPasswordSubtitle),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _emailCtrl,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: AppStrings.loginEmail,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ] else ...[
+              TextField(
+                controller: _codeCtrl,
+                decoration: InputDecoration(
+                  labelText: AppStrings.resetCode,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _newPasswordCtrl,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: AppStrings.newPassword,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _confirmPasswordCtrl,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: AppStrings.confirmNewPassword,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+            if (_message != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                _message!,
+                style: TextStyle(
+                  color: _isError ? Colors.red : Colors.green,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(AppStrings.backToLogin),
+        ),
+        if (_isLoading)
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          )
+        else
+          ElevatedButton(
+            onPressed: _codeSent ? _resetPassword : _sendCode,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: HelpiTheme.teal,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(
+              _codeSent
+                  ? AppStrings.resetPasswordButton
+                  : AppStrings.sendResetCode,
+            ),
+          ),
+      ],
     );
   }
 }
