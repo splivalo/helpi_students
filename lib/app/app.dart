@@ -93,9 +93,7 @@ class _HelpiStudentAppState extends State<HelpiStudentApp> {
 
   Widget _buildHome() {
     if (_isCheckingAuth) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     if (!_isLoggedIn) {
       return LoginScreen(

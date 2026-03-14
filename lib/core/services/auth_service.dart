@@ -89,10 +89,7 @@ class AuthService {
   /// Zahtjev za reset kod na email.
   Future<AuthResult> forgotPassword(String email) async {
     try {
-      await _dio.post(
-        ApiEndpoints.forgotPassword,
-        data: {'email': email},
-      );
+      await _dio.post(ApiEndpoints.forgotPassword, data: {'email': email});
       return const AuthResult(success: true);
     } on DioException catch (e) {
       final msg =
@@ -112,11 +109,7 @@ class AuthService {
     try {
       await _dio.post(
         ApiEndpoints.resetPassword,
-        data: {
-          'email': email,
-          'resetCode': code,
-          'newPassword': newPassword,
-        },
+        data: {'email': email, 'resetCode': code, 'newPassword': newPassword},
       );
       return const AuthResult(success: true);
     } on DioException catch (e) {

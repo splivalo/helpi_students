@@ -107,7 +107,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextField(
                             controller: _emailCtrl,
                             keyboardType: TextInputType.emailAddress,
-                            autofillHints: const [AutofillHints.email, AutofillHints.username],
+                            autofillHints: const [
+                              AutofillHints.email,
+                              AutofillHints.username,
+                            ],
                             decoration: InputDecoration(
                               labelText: AppStrings.loginEmail,
                               prefixIcon: const Icon(
@@ -189,7 +192,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: Text(
                           _errorMessage!,
-                          style: TextStyle(color: Colors.red.shade700, fontSize: 14),
+                          style: TextStyle(
+                            color: Colors.red.shade700,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -203,8 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: _isLoading
                             ? null
                             : (_isRegisterMode
-                                ? widget.onRegisterSuccess
-                                : _handleLogin),
+                                  ? widget.onRegisterSuccess
+                                  : _handleLogin),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: HelpiTheme.coral,
                           foregroundColor: Colors.white,
@@ -340,10 +346,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showForgotPasswordDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => const _ForgotPasswordDialog(),
-    );
+    showDialog(context: context, builder: (_) => const _ForgotPasswordDialog());
   }
 }
 
