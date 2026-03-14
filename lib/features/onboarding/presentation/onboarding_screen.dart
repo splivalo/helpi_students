@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/models/availability_model.dart';
+import 'package:helpi_student/core/utils/availability_helpers.dart';
 import 'package:helpi_student/core/widgets/availability_day_row.dart';
-import 'package:helpi_student/core/widgets/time_slot_picker.dart';
 
 /// Onboarding — student mora postaviti dostupnost prije korištenja app-a.
 /// Gumb "Završi" je disabled dok nema barem 1 dan s postavljenim vremenom.
@@ -31,32 +31,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     required DayAvailability day,
     required bool isFrom,
   }) async {
-    final initial = isFrom ? day.from : day.to;
-    final picked = await showTimeSlotPicker(
+    final changed = await pickAvailabilityTime(
       context: context,
-      initialTime: initial,
-      minTime: isFrom
-          ? null
-          : TimeOfDay(
-              hour: (day.from.hour * 60 + day.from.minute + 45) ~/ 60,
-              minute: (day.from.hour * 60 + day.from.minute + 45) % 60,
-            ),
+      day: day,
+      isFrom: isFrom,
     );
-    if (picked != null && context.mounted) {
-      setState(() {
-        if (isFrom) {
-          day.from = picked;
-          // Ako je novo "Od" + 1h > "Do", snap "Do" na Od + 1h.
-          final fromMin = picked.hour * 60 + picked.minute;
-          final toMin = day.to.hour * 60 + day.to.minute;
-          if (toMin < fromMin + 60) {
-            final next = fromMin + 60;
-            day.to = TimeOfDay(hour: next ~/ 60, minute: next % 60);
-          }
-        } else {
-          day.to = picked;
-        }
-      });
+    if (changed) {
+      setState(() {});
       widget.availabilityNotifier.notify();
     }
   }

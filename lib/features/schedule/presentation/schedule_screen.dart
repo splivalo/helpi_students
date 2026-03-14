@@ -5,7 +5,7 @@ import 'package:helpi_student/app/theme.dart';
 import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/models/job_model.dart';
 import 'package:helpi_student/core/utils/formatters.dart';
-import 'package:helpi_student/core/utils/job_helpers.dart';
+import 'package:helpi_student/core/widgets/job_status_badge.dart';
 import 'package:helpi_student/features/schedule/presentation/job_detail_screen.dart';
 
 /// Raspored ekran — tjedni strip + lista poslova za odabrani dan.
@@ -83,8 +83,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   String _formatDate(DateTime date) => Formatters.formatDateShort(date);
 
-  String _formatTime(TimeOfDay time) => Formatters.formatTime(time);
-
   String _dayLabel(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -104,12 +102,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     ];
     return '${dayNames[date.weekday - 1]}, ${_formatDate(date)}';
   }
-
-  String _statusLabel(JobStatus status) => JobHelpers.statusLabel(status);
-
-  Color _statusColor(JobStatus status) => JobHelpers.statusColor(status);
-
-  Color _statusBgColor(JobStatus status) => JobHelpers.statusBgColor(status);
 
   void _openJobDetail(Job job) {
     Navigator.push(
@@ -177,10 +169,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                         job: job,
                         theme: theme,
                         teal: teal,
-                        formatTime: _formatTime,
-                        statusLabel: _statusLabel,
-                        statusColor: _statusColor,
-                        statusBgColor: _statusBgColor,
                         onTap: () => _openJobDetail(job),
                       );
                     },
@@ -411,26 +399,16 @@ class _JobCard extends StatelessWidget {
     required this.job,
     required this.theme,
     required this.teal,
-    required this.formatTime,
-    required this.statusLabel,
-    required this.statusColor,
-    required this.statusBgColor,
     this.onTap,
   });
 
   final Job job;
   final ThemeData theme;
   final Color teal;
-  final String Function(TimeOfDay) formatTime;
-  final String Function(JobStatus) statusLabel;
-  final Color Function(JobStatus) statusColor;
-  final Color Function(JobStatus) statusBgColor;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final sColor = statusColor(job.status);
-    final sBgColor = statusBgColor(job.status);
 
     return Material(
       color: Colors.white,
@@ -454,30 +432,13 @@ class _JobCard extends StatelessWidget {
                     Icon(Icons.access_time, size: 20, color: teal),
                     const SizedBox(width: 8),
                     Text(
-                      '${formatTime(job.from)} – ${formatTime(job.to)}',
+                      '${Formatters.formatTime(job.from)} – ${Formatters.formatTime(job.to)}',
                       style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const Spacer(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: sBgColor,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        statusLabel(job.status),
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: sColor,
-                        ),
-                      ),
-                    ),
+                    JobStatusBadge(status: job.status),
                   ],
                 ),
               ),

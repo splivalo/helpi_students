@@ -29,6 +29,12 @@ class HelpiTheme {
   static const Color coral = _primary;
   static const Color teal = _accent;
 
+  // ─── Reusable button styles ─────────────────────────────────────
+  static final ButtonStyle coralOutlinedStyle = OutlinedButton.styleFrom(
+    foregroundColor: coral,
+    side: const BorderSide(color: coral, width: 2),
+  );
+
   // ─── Dimenzije gumba ────────────────────────────────────────────
   static const double buttonHeight = 56.0;
   static const double buttonRadius = 16.0;

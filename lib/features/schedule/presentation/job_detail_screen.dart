@@ -8,6 +8,7 @@ import 'package:helpi_student/core/models/review_model.dart';
 import 'package:helpi_student/core/utils/formatters.dart';
 import 'package:helpi_student/core/utils/job_helpers.dart';
 import 'package:helpi_student/core/utils/snackbar_helper.dart';
+import 'package:helpi_student/core/widgets/job_status_badge.dart';
 import 'package:helpi_student/core/widgets/star_rating.dart';
 
 /// Detalji jednog posla — prikazuje sve info + sekcija za ocjenu seniora.
@@ -33,18 +34,6 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
     super.initState();
     _job = widget.job;
   }
-
-  String _formatTime(TimeOfDay time) => Formatters.formatTime(time);
-
-  String _formatDate(DateTime date) => Formatters.formatDateFull(date);
-
-  String _serviceLabel(ServiceType type) => JobHelpers.serviceLabel(type);
-
-  String _statusLabel(JobStatus status) => JobHelpers.statusLabel(status);
-
-  Color _statusColor(JobStatus status) => JobHelpers.statusColor(status);
-
-  Color _statusBgColor(JobStatus status) => JobHelpers.statusBgColor(status);
 
   void _showReviewSheet() {
     int selectedRating = 0;
@@ -154,7 +143,6 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final teal = theme.colorScheme.secondary;
-    final sColor = _statusColor(_job.status);
 
     return Scaffold(
       appBar: AppBar(title: Text(AppStrings.jobDetailTitle)),
@@ -185,30 +173,13 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          _formatDate(_job.date),
+                          Formatters.formatDateFull(_job.date),
                           style: theme.textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: _statusBgColor(_job.status),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            _statusLabel(_job.status),
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: sColor,
-                            ),
-                          ),
-                        ),
+                        JobStatusBadge(status: _job.status),
                       ],
                     ),
                   ),
@@ -227,7 +198,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          '${_formatTime(_job.from)} – ${_formatTime(_job.to)}',
+                          '${Formatters.formatTime(_job.from)} – ${Formatters.formatTime(_job.to)}',
                           style: theme.textTheme.bodySmall,
                         ),
                       ],
@@ -286,7 +257,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  _serviceLabel(type),
+                                  JobHelpers.serviceLabel(type),
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,

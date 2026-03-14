@@ -6,6 +6,7 @@ import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/models/job_model.dart';
 import 'package:helpi_student/core/models/review_model.dart';
 import 'package:helpi_student/core/utils/formatters.dart';
+import 'package:helpi_student/core/widgets/helpi_card.dart';
 import 'package:helpi_student/core/widgets/review_card.dart';
 import 'package:helpi_student/core/widgets/star_rating.dart';
 
@@ -213,13 +214,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final prevHours = _weeklyHours(prevWeekStart);
     final prevTotal = prevHours.fold(0.0, (a, b) => a + b);
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: HelpiTheme.border),
-      ),
+    return HelpiCard(
       child: Column(
         children: [
           Text(
@@ -343,13 +338,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final prevWeeks = _monthlyWeeks(prevMonth);
     final prevTotal = prevWeeks.fold(0.0, (s, w) => s + w.hours);
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: HelpiTheme.border),
-      ),
+    return HelpiCard(
       child: Column(
         children: [
           Text(
@@ -521,13 +510,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget _buildRatingSection(ThemeData theme) {
     final avg = _averageRating();
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: HelpiTheme.border),
-      ),
+    return HelpiCard(
       child: Column(
         children: [
           Text(
@@ -571,13 +554,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         ),
         const SizedBox(height: 12),
         if (allReviews.isEmpty)
-          Container(
+          HelpiCard(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: HelpiTheme.border),
-            ),
             child: Center(
               child: Text(
                 AppStrings.statsNoReviews,

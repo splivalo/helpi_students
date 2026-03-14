@@ -5,10 +5,10 @@ import 'package:helpi_student/core/l10n/app_strings.dart';
 import 'package:helpi_student/core/l10n/locale_notifier.dart';
 import 'package:helpi_student/core/models/availability_model.dart';
 import 'package:helpi_student/core/models/faculty.dart';
+import 'package:helpi_student/core/utils/availability_helpers.dart';
 import 'package:helpi_student/core/utils/formatters.dart';
 import 'package:helpi_student/core/widgets/availability_day_row.dart';
 import 'package:helpi_student/core/widgets/faculty_picker.dart';
-import 'package:helpi_student/core/widgets/time_slot_picker.dart';
 
 /// Profil ekran â€” pristupni podaci, dostupnost, jezik, uvjeti, odjava.
 class ProfileScreen extends StatefulWidget {
@@ -64,32 +64,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required DayAvailability day,
     required bool isFrom,
   }) async {
-    final initial = isFrom ? day.from : day.to;
-    final picked = await showTimeSlotPicker(
+    final changed = await pickAvailabilityTime(
       context: context,
-      initialTime: initial,
-      minTime: isFrom
-          ? null
-          : TimeOfDay(
-              hour: (day.from.hour * 60 + day.from.minute + 45) ~/ 60,
-              minute: (day.from.hour * 60 + day.from.minute + 45) % 60,
-            ),
+      day: day,
+      isFrom: isFrom,
     );
-    if (picked != null && context.mounted) {
-      setState(() {
-        if (isFrom) {
-          day.from = picked;
-          // Ako je novo "Od" + 1h > "Do", snap "Do" na Od + 1h.
-          final fromMin = picked.hour * 60 + picked.minute;
-          final toMin = day.to.hour * 60 + day.to.minute;
-          if (toMin < fromMin + 60) {
-            final next = fromMin + 60;
-            day.to = TimeOfDay(hour: next ~/ 60, minute: next % 60);
-          }
-        } else {
-          day.to = picked;
-        }
-      });
+    if (changed) {
+      setState(() {});
       widget.availabilityNotifier.notify();
     }
   }
@@ -284,10 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: widget.onLogout,
             icon: const Icon(Icons.logout),
             label: Text(AppStrings.logout),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: HelpiTheme.coral,
-              side: const BorderSide(color: HelpiTheme.coral, width: 2),
-            ),
+            style: HelpiTheme.coralOutlinedStyle,
           ),
           const SizedBox(height: 32),
 
