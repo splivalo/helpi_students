@@ -409,7 +409,6 @@ class _JobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
